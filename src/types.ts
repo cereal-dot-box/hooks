@@ -76,3 +76,51 @@ export interface HookManifest {
   files?: string[];
   hooks: ManifestHook[];
 }
+
+// --- Lock files ---
+
+export interface InstalledEntry {
+  agenthooksId: string;
+  packageName: string;
+  hookId: string;
+  event: HookEvent;
+  agent: AgentName;
+  matcher?: string;
+  command: string;
+}
+
+export interface PackageInstall {
+  name: string;
+  source: string;
+  sourceType: "local" | "github" | "npm";
+  sourceUrl?: string;
+  ref?: string;
+  resolvedAt: string;
+  manifestHash: string;
+  agents: AgentName[];
+  configPaths: Record<string, string>;
+  entries: InstalledEntry[];
+  scriptsDir?: string;
+  installedAt: string;
+  updatedAt: string;
+}
+
+export interface GlobalLock {
+  schemaVersion: 3;
+  packages: Record<string, PackageInstall>;
+}
+
+export interface ProjectLockEntry {
+  name: string;
+  source: string;
+  sourceType: string;
+  ref?: string;
+  manifestHash: string;
+  agents: AgentName[];
+  hooks: Array<{ id: string; event: HookEvent }>;
+}
+
+export interface ProjectLock {
+  schemaVersion: 1;
+  packages: ProjectLockEntry[];
+}

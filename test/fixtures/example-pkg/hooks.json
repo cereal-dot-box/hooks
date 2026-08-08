@@ -1,0 +1,27 @@
+{
+  "name": "example-pkg",
+  "description": "Example agenthooks package for tests and docs.",
+  "version": 1,
+  "files": ["scripts/onstart.mjs", "scripts/logbash.mjs"],
+  "hooks": [
+    {
+      "id": "print-session-banner",
+      "event": "SessionStart",
+      "command": "node $HOOK_DIR/scripts/onstart.mjs",
+      "agents": { "codex": { "matcher": "startup|resume" } }
+    },
+    {
+      "id": "log-bash-calls",
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "command": "node $HOOK_DIR/scripts/logbash.mjs",
+      "statusMessage": "Logging bash call",
+      "additionalContextLimit": 5000
+    },
+    {
+      "id": "say-stopped",
+      "event": "Stop",
+      "command": "echo stopped"
+    }
+  ]
+}
