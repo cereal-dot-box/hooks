@@ -2,7 +2,7 @@
 
 > Install lifecycle hooks into Claude Code and Codex from a portable package. The hooks analog of [`npx skills`](https://github.com/vercel-labs/skills).
 
-**Status:** work-in-progress, pre-1.0. MVP supports Claude Code + Codex and the `add` / `list` / `remove` commands.
+**Status:** pre-1.0. MVP supports Claude Code + Codex and the `add` / `list` / `remove` commands against local package directories. Remote sources (`github:` / `npm:`) are planned.
 
 ## What it does
 

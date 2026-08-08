@@ -32,6 +32,7 @@ function pkg(name: string, hash = "abc123"): PackageInstall {
     agents: ["claude-code"],
     configPaths: { "claude-code": "/c" },
     entries: [],
+    mark: true,
     installedAt: "t",
     updatedAt: "t",
   };

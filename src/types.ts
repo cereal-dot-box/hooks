@@ -101,6 +101,8 @@ export interface PackageInstall {
   configPaths: Record<string, string>;
   entries: InstalledEntry[];
   scriptsDir?: string;
+  /** Whether marker fields were written (controls removal target shape). */
+  mark: boolean;
   installedAt: string;
   updatedAt: string;
 }
