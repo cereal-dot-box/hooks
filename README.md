@@ -45,7 +45,7 @@ A hook package is a directory with a `hooks.json` manifest:
 - `id` — stable, unique within the package (`[a-z0-9-]+`). Used as the removal key.
 - `event` — one of the agent lifecycle events (`SessionStart`, `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`, ...).
 - `command` — the shell command. `$HOOK_DIR` (or `${HOOK_DIR}`) expands to the dir where `files` were copied.
-- `matcher` — event-specific regex (tool name, session source, ...).
+- `matcher` — event-specific regex (tool name, session source, ...). See [`docs/matcher.md`](docs/matcher.md) for the full story.
 - `agents.<name>` — per-agent overrides for `command` / `matcher`.
 - `additionalContextLimit` / `statusMessage` — Codex-only fields; ignored by Claude Code.
 - `files` — scripts copied into a managed dir and referenced via `$HOOK_DIR`.
