@@ -20,30 +20,33 @@ describe("scripts-dir", () => {
   it("copies files preserving relative structure", () => {
     mkdirSync(join(src, "scripts"), { recursive: true });
     writeFileSync(join(src, "scripts", "a.mjs"), "hello");
-    const dest = copyScripts("pkg", "hash1", ["scripts/a.mjs"], src, root);
+    const dest = copyScripts("my-hook", ["scripts/a.mjs"], src, root);
     expect(readFileSync(join(dest, "scripts", "a.mjs"), "utf8")).toBe("hello");
   });
 
-  it("is idempotent — a second call returns the same dir without error", () => {
-    writeFileSync(join(src, "a.mjs"), "x");
-    const d1 = copyScripts("pkg", "h", ["a.mjs"], src, root);
-    const d2 = copyScripts("pkg", "h", ["a.mjs"], src, root);
+  it("overwrites on re-copy so updates propagate", () => {
+    writeFileSync(join(src, "a.mjs"), "v1");
+    const d1 = copyScripts("my-hook", ["a.mjs"], src, root);
+    writeFileSync(join(src, "a.mjs"), "v2");
+    const d2 = copyScripts("my-hook", ["a.mjs"], src, root);
     expect(d1).toBe(d2);
+    expect(readFileSync(join(d2, "a.mjs"), "utf8")).toBe("v2");
   });
 
   it("throws when a declared file is missing from the package", () => {
-    expect(() => copyScripts("pkg", "h", ["nope.mjs"], src, root)).toThrow(/not found/);
+    expect(() => copyScripts("my-hook", ["nope.mjs"], src, root)).toThrow(/not found/);
   });
 
-  it("rmScriptsDir removes all versions under the package", () => {
+  it("rmScriptsDir removes the hook dir but leaves siblings", () => {
     writeFileSync(join(src, "a.mjs"), "x");
-    copyScripts("pkg", "h1", ["a.mjs"], src, root);
-    copyScripts("pkg", "h2", ["a.mjs"], src, root);
-    rmScriptsDir("pkg", root);
-    expect(existsSync(join(root, "pkg"))).toBe(false);
+    copyScripts("hook-a", ["a.mjs"], src, root);
+    copyScripts("hook-b", ["a.mjs"], src, root);
+    rmScriptsDir("hook-a", root);
+    expect(existsSync(join(root, "hook-a"))).toBe(false);
+    expect(existsSync(join(root, "hook-b"))).toBe(true);
   });
 
-  it("scriptsDirFor sanitizes unsafe package names", () => {
-    expect(scriptsDirFor("../evil", "h", root)).toBe(join(root, ".._evil", "h"));
+  it("scriptsDirFor sanitizes unsafe hook ids", () => {
+    expect(scriptsDirFor("../evil", root)).toBe(join(root, ".._evil"));
   });
 });

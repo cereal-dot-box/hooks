@@ -44,7 +44,7 @@ A hook package is a directory with a `hooks.json` manifest:
 
 - `id` — stable, unique within the package (`[a-z0-9-]+`). Used as the removal key.
 - `event` — one of the agent lifecycle events (`SessionStart`, `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`, ...).
-- `command` — the shell command. `$HOOK_DIR` (or `${HOOK_DIR}`) expands to the dir where `files` were copied.
+- `command` — the shell command. `$HOOK_DIR` (or `${HOOK_DIR}`) expands to that hook's installed scripts dir (`~/.agents/hooks/<hookId>/`).
 - `matcher` — event-specific regex (tool name, session source, ...). See [`docs/matcher.md`](docs/matcher.md) for the full story.
 - `agents.<name>` — per-agent overrides for `command` / `matcher`.
 - `additionalContextLimit` / `statusMessage` — Codex-only fields; ignored by Claude Code.
@@ -52,7 +52,7 @@ A hook package is a directory with a `hooks.json` manifest:
 
 ## How it works
 
-Each installed entry is written with two trailing marker fields — `managedBy: "agenthooks"` and `agenthooksId: "<package>:<hookId>"` — so ownership is O(1) and removal is deterministic even if you later edit the command or matcher. A sidecar lock at `~/.agenthooks/installed.json` is the book of record and powers `list` drift detection and script garbage-collection. `remove` filters by `agenthooksId` and cleans up empty groups, so your config returns to its prior state.
+Each installed entry is written with two trailing marker fields — `managedBy: "agenthooks"` and `agenthooksId: "<package>:<hookId>"` — so ownership is O(1) and removal is deterministic even if you later edit the command or matcher. A sidecar lock at `~/.agents/agenthooks.json` is the book of record and powers `list` drift detection and script garbage-collection. `remove` filters by `agenthooksId` and cleans up empty groups, so your config returns to its prior state. Each hook's scripts live at `~/.agents/hooks/<hookId>/`, GC'd on remove.
 
 Your existing formatting (indent size, trailing newline, key order, unrelated keys like `permissions` or `env`) is preserved on every write. Unparseable config files are never overwritten.
 

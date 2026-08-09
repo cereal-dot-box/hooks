@@ -5,7 +5,7 @@ import { ConfigParseError } from "./errors.js";
 import type { GlobalLock, PackageInstall } from "./types.js";
 
 export function emptyGlobalLock(): GlobalLock {
-  return { schemaVersion: 3, packages: {} };
+  return { schemaVersion: 4, packages: {} };
 }
 
 export function readGlobalLock(path: string = GLOBAL_LOCK_PATH): GlobalLock {
@@ -20,7 +20,7 @@ export function readGlobalLock(path: string = GLOBAL_LOCK_PATH): GlobalLock {
     return emptyGlobalLock();
   }
   const obj = parsed as Partial<GlobalLock>;
-  return { schemaVersion: 3, packages: obj.packages ?? {} };
+  return { schemaVersion: 4, packages: obj.packages ?? {} };
 }
 
 export function writeGlobalLock(lock: GlobalLock, path: string = GLOBAL_LOCK_PATH): void {

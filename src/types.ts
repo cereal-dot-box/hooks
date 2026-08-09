@@ -100,7 +100,6 @@ export interface PackageInstall {
   agents: AgentName[];
   configPaths: Record<string, string>;
   entries: InstalledEntry[];
-  scriptsDir?: string;
   /** Whether marker fields were written (controls removal target shape). */
   mark: boolean;
   installedAt: string;
@@ -108,7 +107,7 @@ export interface PackageInstall {
 }
 
 export interface GlobalLock {
-  schemaVersion: 3;
+  schemaVersion: 4;
   packages: Record<string, PackageInstall>;
 }
 

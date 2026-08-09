@@ -54,8 +54,9 @@ export function removePackage(name: string, opts: RemoveOptions = {}): RemoveOut
   }
 
   let scriptsRemoved = false;
-  if (pkg.scriptsDir) {
-    rmScriptsDir(pkg.name);
+  const hookIds = new Set(pkg.entries.map((e) => e.hookId));
+  for (const hookId of hookIds) {
+    rmScriptsDir(hookId);
     scriptsRemoved = true;
   }
 

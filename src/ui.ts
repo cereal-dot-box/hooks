@@ -28,7 +28,7 @@ export function printInstallResult(o: InstallOutcome, json: boolean): void {
     return;
   }
   console.log(pc.bold(`Installed ${pc.cyan(o.packageName)} ${pc.dim(`(${o.manifestHash})`)}`));
-  if (o.scriptsDir) console.log(pc.dim(`  scripts: ${o.scriptsDir}`));
+  for (const d of o.scriptsDirs) console.log(pc.dim(`  scripts: ${d}`));
   for (const [agent, res] of Object.entries(o.results)) {
     const r = res as AgentResult;
     console.log(`  ${pc.magenta(agent)} ${pc.dim("→")} ${pc.dim(r.configPath)}`);

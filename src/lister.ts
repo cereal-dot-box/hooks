@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { readGlobalLock } from "./installed-lock.js";
+import { scriptsDirFor } from "./scripts-dir.js";
 import type { AgentName } from "./types.js";
 
 export interface ListedEntry {
@@ -15,7 +16,7 @@ export interface ListedPackage {
   sourceType: string;
   agents: AgentName[];
   configPaths: Record<string, string>;
-  scriptsDir?: string;
+  scriptsDirs: string[];
   entries: ListedEntry[];
 }
 
@@ -82,7 +83,7 @@ export function listInstalled(): ListOutcome {
       sourceType: pkg.sourceType,
       agents: pkg.agents,
       configPaths: pkg.configPaths,
-      scriptsDir: pkg.scriptsDir,
+      scriptsDirs: [...new Set(pkg.entries.map((e) => scriptsDirFor(e.hookId)))],
       entries,
     });
   }

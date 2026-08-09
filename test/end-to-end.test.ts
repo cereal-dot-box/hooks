@@ -134,8 +134,10 @@ describe("end-to-end", () => {
     const fresh = mkdtempSync(join(tmpdir(), "ah-e2e-rm-"));
     try {
       run(["add", FIXTURE, "--global", "--yes"], fresh);
-      const scriptsDir = join(fresh, ".agenthooks/scripts/example-pkg");
-      expect(existsSync(scriptsDir)).toBe(true);
+      const hooksRoot = join(fresh, ".agenthooks/hooks");
+      expect(existsSync(join(hooksRoot, "print-session-banner"))).toBe(true);
+      expect(existsSync(join(hooksRoot, "log-bash-calls"))).toBe(true);
+      expect(existsSync(join(hooksRoot, "say-stopped"))).toBe(true);
 
       const out = run(["remove", "example-pkg", "--global", "--yes", "--json"], fresh);
       expect(out.status).toBe(0);
@@ -146,9 +148,11 @@ describe("end-to-end", () => {
 
       expect(readJSON(join(fresh, ".claude/settings.json"))).toEqual({});
       expect(readJSON(join(fresh, ".codex/hooks.json"))).toEqual({});
-      expect(existsSync(scriptsDir)).toBe(false);
+      expect(existsSync(join(hooksRoot, "print-session-banner"))).toBe(false);
+      expect(existsSync(join(hooksRoot, "log-bash-calls"))).toBe(false);
+      expect(existsSync(join(hooksRoot, "say-stopped"))).toBe(false);
 
-      const lock = readJSON(join(fresh, ".agenthooks/installed.json")) as any;
+      const lock = readJSON(join(fresh, ".agenthooks/agenthooks.json")) as any;
       expect(lock.packages).toEqual({});
     } finally {
       rmSync(fresh, { recursive: true, force: true });

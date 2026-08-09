@@ -40,7 +40,7 @@ export interface InstallOutcome {
   manifestHash: string;
   agents: AgentName[];
   results: Partial<Record<AgentName, AgentResult>>;
-  scriptsDir: string | null;
+  scriptsDirs: string[];
 }
 
 export function installPackage(source: string, opts: InstallOptions = {}): InstallOutcome {
@@ -53,9 +53,13 @@ export function installPackage(source: string, opts: InstallOptions = {}): Insta
   const agents = resolveAgents(opts.agents);
 
   const files = manifest.files ?? [];
-  const scriptsDir = files.length > 0 ? copyScripts(manifest.name, manifestHash, files, pkgDir) : null;
+  const scriptsDirs = new Map<string, string>();
+  for (const h of manifest.hooks) {
+    if (files.length > 0) {
+      scriptsDirs.set(h.id, copyScripts(h.id, files, pkgDir));
+    }
+  }
 
-  const ctx = { packageName: manifest.name, scriptsDir: scriptsDir ?? "", pkgDir };
   const results: Partial<Record<AgentName, AgentResult>> = {};
   const configPaths: Record<string, string> = {};
   const installedEntries: InstalledEntry[] = [];
@@ -65,7 +69,9 @@ export function installPackage(source: string, opts: InstallOptions = {}): Insta
     const configPath = scope === "global" ? adapter.globalConfigPath() : adapter.projectConfigPath();
     configPaths[agentName] = configPath;
 
-    const prepared: PreparedEntry[] = manifest.hooks.map((h) => adapter.adaptHook(h, ctx));
+    const prepared: PreparedEntry[] = manifest.hooks.map((h) =>
+      adapter.adaptHook(h, { packageName: manifest.name, scriptsDir: scriptsDirs.get(h.id) ?? "", pkgDir }),
+    );
     const res = installHooksIntoConfig(configPath, prepared, { mark });
     results[agentName] = { configPath, entries: res.entries };
 
@@ -97,7 +103,6 @@ export function installPackage(source: string, opts: InstallOptions = {}): Insta
     agents,
     configPaths,
     entries: installedEntries,
-    scriptsDir: scriptsDir ?? undefined,
     mark,
     installedAt: existing?.installedAt ?? now,
     updatedAt: now,
@@ -117,7 +122,7 @@ export function installPackage(source: string, opts: InstallOptions = {}): Insta
     opts.cwd,
   );
 
-  return { packageName: manifest.name, manifestHash, agents, results, scriptsDir };
+  return { packageName: manifest.name, manifestHash, agents, results, scriptsDirs: [...new Set(scriptsDirs.values())] };
 }
 
 function resolveAgents(specified?: AgentName[]): AgentName[] {
