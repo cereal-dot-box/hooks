@@ -4,6 +4,12 @@ import appCss from '../styles.css?url'
 import { TopBar } from '#/components/top-bar'
 
 export const Route = createRootRoute({
+  // No-ISR caching model (per project memory): the CDN serves fresh for 60s,
+  // then stale-while-revalidate for another 5min. Routes that need different
+  // behavior override this.
+  headers: () => ({
+    'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+  }),
   head: () => ({
     meta: [
       { charSet: 'utf-8' },

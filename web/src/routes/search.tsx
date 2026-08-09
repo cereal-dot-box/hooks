@@ -5,6 +5,8 @@ import { PackageRow } from '#/components/package-row'
 import { searchPackages } from '#/data/server-fns'
 
 export const Route = createFileRoute('/search')({
+  // Search responses are query-dependent; don't let the CDN cache them.
+  headers: () => ({ 'Cache-Control': 'no-store' }),
   validateSearch: z.object({
     q: z.string().optional(),
   }),
