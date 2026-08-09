@@ -1,32 +1,42 @@
-# agenthooks-directory
+# agenthooks.directory
 
-A minimal TanStack Start app with one route and plain CSS.
+The discovery surface for hook packages — browse, inspect, copy an install
+command. The hooks analog of `vercel-labs/skills`. v1 runs against mock
+data; the server-function boundary in `src/data/server-fns.ts` is where
+Supabase + Upstash will land later.
+
+## Develop
 
 ```bash
 npm install
-npm run dev
+npm run dev      # vite dev --port 3000
 ```
 
-Edit `src/routes/index.tsx` to get started. Add route files under
-`src/routes`; TanStack Router updates `src/routeTree.gen.ts` for you.
+The router regenerates `src/routeTree.gen.ts` automatically as you add
+route files under `src/routes/`.
 
-Build the production app with:
+## Build
 
 ```bash
-npm run build
+npm run build    # vite build via Nitro
+npm run preview  # preview the production build locally
 ```
 
-## Deploy with Nitro
+Output lands in `.output/`. The Nitro preset is `node-server` by default —
+swap to `vercel`, `cloudflare`, etc. when wiring deploy. See
+https://v3.nitro.build/deploy.
 
-This project uses Nitro as a generic server adapter, so it can run on any Node-compatible host.
+## Layout
 
-```bash
-npm run build
-node dist/server/index.mjs
+```
+src/
+  routes/            TanStack Router file routes
+  components/        shared React components
+  data/              mock dataset, types, server-function boundary
+  lib/               events taxonomy, formatting helpers
+  styles/            tokens, base, spine, components (CSS, no Tailwind)
 ```
 
-The build output is a self-contained Node server. To deploy, push the `dist/` directory to your host (Render, Fly.io, your own VPS, etc.) and run the server command above.
-
-For host-specific presets (Vercel, Netlify, Cloudflare, AWS Lambda, etc.) and tuning, see https://v3.nitro.build/deploy.
-
-
+Design system lives in `src/styles/tokens.css`. The lifecycle spine
+(`src/components/lifecycle-spine.tsx`) is the signature element — change
+it deliberately, not by accident.
