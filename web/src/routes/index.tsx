@@ -1,65 +1,57 @@
+import { z } from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
-import { LifecycleSpine } from '#/components/lifecycle-spine'
 
-export const Route = createFileRoute('/')({ component: Home })
+import { PackageRow } from '#/components/package-row'
+import { Tabs } from '#/components/tabs'
+import { PACKAGES } from '#/data/packages'
+import { getLeaderboard } from '#/data/server-fns'
+import type { LeaderboardSort } from '#/data/types'
+
+const SORTS: LeaderboardSort[] = ['all-time', 'trending', 'hot']
+
+export const Route = createFileRoute('/')({
+  validateSearch: z.object({
+    sort: z.enum(['all-time', 'trending', 'hot']).optional(),
+  }),
+  loaderDeps: ({ search }) => ({ sort: (search.sort ?? 'all-time') as LeaderboardSort }),
+  loader: async ({ deps }) => {
+    const packages = await getLeaderboard({ data: deps.sort })
+    return { packages, sort: deps.sort }
+  },
+  component: Home,
+})
 
 function Home() {
+  const { packages, sort } = Route.useLoaderData()
+
   return (
-    <main
-      style={{
-        maxWidth: 'var(--measure-wide)',
-        margin: 'var(--space-7) auto',
-        padding: '0 var(--space-5)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--space-7)',
-      }}
-    >
-      <section>
-        <h1>Spine preview</h1>
-        <p style={{ color: 'var(--mute)', fontFamily: 'var(--font-mono)', fontSize: 'var(--step--1)' }}>
-          temporary render to validate the lifecycle spine before wiring real routes
+    <main className="page">
+      <header className="page__hero">
+        <p className="page__hero-lede">
+          Hook packages for Claude Code and Codex.
         </p>
-      </section>
+        <div className="page__hero-sub">
+          <span>{PACKAGES.length} packages</span>
+          <span>·</span>
+          <span>installed with one command, removed cleanly</span>
+        </div>
+      </header>
 
-      <section>
-        <h2>Preview — full set</h2>
-        <LifecycleSpine
-          events={['SessionStart', 'PreToolUse', 'Stop']}
-          variant="preview"
-        />
-      </section>
+      <Tabs
+        activeKey={sort}
+        tabs={SORTS.map((s) => ({
+          key: s,
+          label: s,
+          to: '/',
+          search: { sort: s === 'all-time' ? undefined : s },
+        }))}
+      />
 
-      <section>
-        <h2>Preview — single event</h2>
-        <LifecycleSpine events={['PreToolUse']} variant="preview" />
-      </section>
-
-      <section>
-        <h2>Detail — partial</h2>
-        <LifecycleSpine
-          events={['SessionStart', 'UserPromptSubmit', 'PostToolUse', 'PreCompact']}
-          variant="detail"
-        />
-      </section>
-
-      <section>
-        <h2>Detail — all lit</h2>
-        <LifecycleSpine
-          events={[
-            'SessionStart',
-            'UserPromptSubmit',
-            'PreToolUse',
-            'PostToolUse',
-            'Notification',
-            'SubagentStop',
-            'Stop',
-            'SessionEnd',
-            'PreCompact',
-          ]}
-          variant="detail"
-        />
-      </section>
+      <ol className="package-list">
+        {packages.map((pkg, i) => (
+          <PackageRow key={pkg.id} pkg={pkg} rank={i + 1} />
+        ))}
+      </ol>
     </main>
   )
 }
