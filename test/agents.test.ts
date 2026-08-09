@@ -27,7 +27,9 @@ describe("claudeCodeAdapter.adaptHook", () => {
   });
 
   it("templates the command", () => {
-    expect(claudeCodeAdapter.adaptHook(hook(), ctx).command).toBe("node '/srv/scripts/x.mjs'");
+    expect(claudeCodeAdapter.adaptHook(hook(), ctx).command).toBe(
+      "HOOK_DIR='/srv/scripts' node '/srv/scripts/x.mjs'",
+    );
   });
 
   it("sets agenthooksId as packageName:hookId", () => {
@@ -65,6 +67,8 @@ describe("codexAdapter.adaptHook", () => {
   });
 
   it("templates the command", () => {
-    expect(codexAdapter.adaptHook(hook(), ctx).command).toBe("node '/srv/scripts/x.mjs'");
+    expect(codexAdapter.adaptHook(hook(), ctx).command).toBe(
+      "HOOK_DIR='/srv/scripts' node '/srv/scripts/x.mjs'",
+    );
   });
 });
