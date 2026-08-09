@@ -10,6 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as OwnerRepoRouteImport } from './routes/$owner.$repo'
+import { Route as AgentAgentRouteImport } from './routes/agent.$agent'
+import { Route as EventEventRouteImport } from './routes/event.$event'
 import { Route as OwnerRepoPackageRouteImport } from './routes/$owner.$repo.$package'
 
 const IndexRoute = IndexRouteImport.update({
@@ -17,36 +21,90 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OwnerRepoPackageRoute = OwnerRepoPackageRouteImport.update({
-  id: '/$owner/$repo/$package',
-  path: '/$owner/$repo/$package',
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
+} as any)
+const OwnerRepoRoute = OwnerRepoRouteImport.update({
+  id: '/$owner/$repo',
+  path: '/$owner/$repo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentAgentRoute = AgentAgentRouteImport.update({
+  id: '/agent/$agent',
+  path: '/agent/$agent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventEventRoute = EventEventRouteImport.update({
+  id: '/event/$event',
+  path: '/event/$event',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OwnerRepoPackageRoute = OwnerRepoPackageRouteImport.update({
+  id: '/$package',
+  path: '/$package',
+  getParentRoute: () => OwnerRepoRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/search': typeof SearchRoute
+  '/$owner/$repo': typeof OwnerRepoRouteWithChildren
+  '/agent/$agent': typeof AgentAgentRoute
+  '/event/$event': typeof EventEventRoute
   '/$owner/$repo/$package': typeof OwnerRepoPackageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/search': typeof SearchRoute
+  '/$owner/$repo': typeof OwnerRepoRouteWithChildren
+  '/agent/$agent': typeof AgentAgentRoute
+  '/event/$event': typeof EventEventRoute
   '/$owner/$repo/$package': typeof OwnerRepoPackageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/search': typeof SearchRoute
+  '/$owner/$repo': typeof OwnerRepoRouteWithChildren
+  '/agent/$agent': typeof AgentAgentRoute
+  '/event/$event': typeof EventEventRoute
   '/$owner/$repo/$package': typeof OwnerRepoPackageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$owner/$repo/$package'
+  fullPaths:
+    | '/'
+    | '/search'
+    | '/$owner/$repo'
+    | '/agent/$agent'
+    | '/event/$event'
+    | '/$owner/$repo/$package'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$owner/$repo/$package'
-  id: '__root__' | '/' | '/$owner/$repo/$package'
+  to:
+    | '/'
+    | '/search'
+    | '/$owner/$repo'
+    | '/agent/$agent'
+    | '/event/$event'
+    | '/$owner/$repo/$package'
+  id:
+    | '__root__'
+    | '/'
+    | '/search'
+    | '/$owner/$repo'
+    | '/agent/$agent'
+    | '/event/$event'
+    | '/$owner/$repo/$package'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  OwnerRepoPackageRoute: typeof OwnerRepoPackageRoute
+  SearchRoute: typeof SearchRoute
+  OwnerRepoRoute: typeof OwnerRepoRouteWithChildren
+  AgentAgentRoute: typeof AgentAgentRoute
+  EventEventRoute: typeof EventEventRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,19 +116,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$owner/$repo': {
+      id: '/$owner/$repo'
+      path: '/$owner/$repo'
+      fullPath: '/$owner/$repo'
+      preLoaderRoute: typeof OwnerRepoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent/$agent': {
+      id: '/agent/$agent'
+      path: '/agent/$agent'
+      fullPath: '/agent/$agent'
+      preLoaderRoute: typeof AgentAgentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/event/$event': {
+      id: '/event/$event'
+      path: '/event/$event'
+      fullPath: '/event/$event'
+      preLoaderRoute: typeof EventEventRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$owner/$repo/$package': {
       id: '/$owner/$repo/$package'
-      path: '/$owner/$repo/$package'
+      path: '/$package'
       fullPath: '/$owner/$repo/$package'
       preLoaderRoute: typeof OwnerRepoPackageRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof OwnerRepoRoute
     }
   }
 }
 
+interface OwnerRepoRouteChildren {
+  OwnerRepoPackageRoute: typeof OwnerRepoPackageRoute
+}
+
+const OwnerRepoRouteChildren: OwnerRepoRouteChildren = {
+  OwnerRepoPackageRoute: OwnerRepoPackageRoute,
+}
+
+const OwnerRepoRouteWithChildren = OwnerRepoRoute._addFileChildren(
+  OwnerRepoRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  OwnerRepoPackageRoute: OwnerRepoPackageRoute,
+  SearchRoute: SearchRoute,
+  OwnerRepoRoute: OwnerRepoRouteWithChildren,
+  AgentAgentRoute: AgentAgentRoute,
+  EventEventRoute: EventEventRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
