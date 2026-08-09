@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OwnerRepoPackageRouteImport } from './routes/$owner.$repo.$package'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OwnerRepoPackageRoute = OwnerRepoPackageRouteImport.update({
+  id: '/$owner/$repo/$package',
+  path: '/$owner/$repo/$package',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$owner/$repo/$package': typeof OwnerRepoPackageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$owner/$repo/$package': typeof OwnerRepoPackageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$owner/$repo/$package': typeof OwnerRepoPackageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/$owner/$repo/$package'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/$owner/$repo/$package'
+  id: '__root__' | '/' | '/$owner/$repo/$package'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OwnerRepoPackageRoute: typeof OwnerRepoPackageRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$owner/$repo/$package': {
+      id: '/$owner/$repo/$package'
+      path: '/$owner/$repo/$package'
+      fullPath: '/$owner/$repo/$package'
+      preLoaderRoute: typeof OwnerRepoPackageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OwnerRepoPackageRoute: OwnerRepoPackageRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
