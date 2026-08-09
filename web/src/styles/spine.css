@@ -1,0 +1,117 @@
+.spine {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+}
+
+.spine__off-spine {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--step--1);
+  color: var(--mute);
+}
+
+.spine__off-spine-mark {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border: var(--rule-hair) solid var(--rule-strong);
+  background: var(--page);
+  transform: rotate(45deg);
+}
+
+.spine__off-spine[data-lit='true'] {
+  color: var(--ink);
+}
+
+.spine__off-spine[data-lit='true'] .spine__off-spine-mark {
+  background: var(--mark);
+  border-color: var(--mark);
+}
+
+.spine__line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.spine__line::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 50%;
+  border-top: var(--rule-hair) solid var(--rule);
+  z-index: 0;
+}
+
+.spine__event {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.spine__dot {
+  display: block;
+  background: var(--page);
+  border: var(--rule-hair) solid var(--rule-strong);
+  border-radius: 50%;
+}
+
+.spine__event[data-lit='true'] .spine__dot {
+  background: var(--mark);
+  border-color: var(--mark);
+}
+
+.spine__label {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--mute);
+  white-space: nowrap;
+  text-align: center;
+  line-height: var(--leading-tight);
+}
+
+.spine__event[data-lit='true'] .spine__label {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+/* Preview variant — leaderboard rows. No labels, small dots. */
+.spine--preview .spine__dot {
+  width: 8px;
+  height: 8px;
+}
+
+.spine--preview .spine__label {
+  display: none;
+}
+
+.spine--preview .spine__off-spine {
+  display: none;
+}
+
+/* Detail variant — package page. Labels visible, larger dots. */
+.spine--detail .spine__dot {
+  width: 12px;
+  height: 12px;
+}
+
+.spine--detail .spine__event {
+  min-width: 0;
+}
+
+.spine--detail .spine__label {
+  font-size: var(--step--1);
+  white-space: normal;
+  max-width: 7em;
+}

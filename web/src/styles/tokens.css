@@ -1,0 +1,56 @@
+:root {
+  /* Palette — "technical journal": cool paper, neutral ink, ink-blue mark.
+     Deliberately not the warm-cream + terracotta default; the cool cast on the
+     paper reads as engineering documentation rather than editorial. */
+  --page: #eceae3;
+  --page-raised: #f2f0ea;
+  --ink: #16161a;
+  --rule: #c0bbac;
+  --rule-strong: #9a9385;
+  --mark: #1e3a8a;
+  --mark-soft: #dce3f0;
+  --mute: #6f6a60;
+
+  /* Type families — display serif for personality, body sans for prose,
+     monospace as the *system* face (chrome, labels, metadata, code). */
+  --font-display: 'Instrument Serif', 'EB Garamond', Georgia, serif;
+  --font-body: 'Mona Sans', Inter, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Type scale — modular 1.125ish, tuned by eye. */
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.0625rem;
+  --step-2: 1.375rem;
+  --step-3: 1.75rem;
+  --step-4: 2.5rem;
+  --step-5: 3.75rem;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* Measure — the reading widths the layout commits to. */
+  --measure: 38rem;
+  --measure-wide: 56rem;
+  --measure-prose: 42rem;
+
+  /* Spacing — 4pt grid, hand-picked stops. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  --rule-hair: 1px;
+  --rule-thin: 2px;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+}
