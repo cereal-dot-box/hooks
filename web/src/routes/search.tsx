@@ -25,19 +25,34 @@ function SearchRoute() {
   const { q, results } = Route.useLoaderData()
 
   return (
-    <main className="page">
+    <main className="page page--narrow">
       <header className="page__hero">
         <p className="eyebrow">search</p>
         <form className="search-form" method="get" action="/search">
-          <input
-            type="search"
-            name="q"
-            defaultValue={q}
-            placeholder="search by name, description, or author"
-            aria-label="search"
-            className="search-form__input"
-            autoFocus
-          />
+          <label className="search">
+            <svg
+              className="search__icon"
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              aria-hidden="true"
+            >
+              <circle cx="7" cy="7" r="5" />
+              <path d="M11 11l3 3" strokeLinecap="round" />
+            </svg>
+            <input
+              className="search__input"
+              type="search"
+              name="q"
+              defaultValue={q}
+              placeholder="search by name, description, or author"
+              aria-label="search"
+              autoFocus
+            />
+          </label>
           <button type="submit" className="search-form__submit">
             search
           </button>

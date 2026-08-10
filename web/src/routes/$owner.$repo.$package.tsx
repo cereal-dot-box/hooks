@@ -5,6 +5,7 @@ import { LifecycleSpine } from '#/components/lifecycle-spine'
 import { Markdown } from '#/components/markdown'
 import { getPackage } from '#/data/server-fns'
 import { EVENT_INFO, isEventId } from '#/lib/events'
+import { isoToDate } from '#/lib/format'
 
 export const Route = createFileRoute('/$owner/$repo/$package')({
   loader: async ({ params }) => {
@@ -24,108 +25,196 @@ export const Route = createFileRoute('/$owner/$repo/$package')({
 function PackageDetail() {
   const { pkg } = Route.useLoaderData()
   const events = Array.from(new Set(pkg.hooks.map((h) => h.event)))
-  const installCommand = `npx agenthooks add github:${pkg.owner}/${pkg.repo}`
+  const installCommand = `npx agenthooks add ${pkg.owner}/${pkg.name}`
+  const installPrompt = `Run \`npx agenthooks add -y ${pkg.owner}/${pkg.name}\` now. Hooks resolve at ~/.agents/hooks/<hookId>/.`
 
   return (
     <main className="page">
       <nav className="breadcrumb" aria-label="breadcrumb">
-        <Link to="/">directory</Link>
+        <Link to="/">agenthooks</Link>
         <span className="breadcrumb__sep">/</span>
-        <span>{pkg.owner}</span>
+        <Link
+          to="/$owner/$repo"
+          params={{ owner: pkg.owner, repo: pkg.repo }}
+        >
+          {pkg.owner}
+        </Link>
         <span className="breadcrumb__sep">/</span>
-        <span>{pkg.repo}</span>
+        <Link
+          to="/$owner/$repo"
+          params={{ owner: pkg.owner, repo: pkg.repo }}
+        >
+          {pkg.repo}
+        </Link>
         <span className="breadcrumb__sep">/</span>
         <span className="breadcrumb__current">{pkg.name}</span>
       </nav>
 
-      <article className="man">
-        <section>
-          <p className="eyebrow">name</p>
-          <h1 className="man__name-title">{pkg.name}</h1>
-          <p className="man__name-meta">
-            {pkg.owner}/{pkg.repo}
-          </p>
-          <p className="man__name-desc">{pkg.description}</p>
-        </section>
+      <div className="page__cols">
+        <div className="page__content">
+          {/* ===== hook header ===== */}
+          <header className="hook-head">
+            <h1 className="hook-head__name">{pkg.name}</h1>
+            <p className="hook-head__desc">{pkg.description}</p>
+          </header>
 
-        <section>
-          <p className="eyebrow">synopsis</p>
-          <InstallCommand command={installCommand} />
-        </section>
+          {/* ===== usage ===== */}
+          <InstallCommand command={installCommand} prompt={installPrompt} />
 
-        <section>
-          <p className="eyebrow">hooks — lifecycle</p>
-          <LifecycleSpine events={events} variant="detail" />
-        </section>
+          {/* ===== lifecycle ===== */}
+          <section className="lifecycle">
+            <div className="section-head">
+              <span className="section-head__title">Lifecycle</span>
+            </div>
+            <LifecycleSpine events={events} variant="detail" />
+          </section>
 
-        <section>
-          <p className="eyebrow">hooks — commands</p>
-          {pkg.hooks.map((hook) => {
-            const eventInfo = isEventId(hook.event)
-              ? EVENT_INFO[hook.event]
-              : undefined
-            return (
-              <div key={hook.id} className="hook">
-                <div className="hook__head">
-                  <div className="hook__id">{hook.id}</div>
-                  {eventInfo && (
-                    <Link
-                      to="/event/$event"
-                      params={{ event: hook.event }}
-                      className="hook__event"
-                    >
-                      {hook.event}
-                    </Link>
-                  )}
-                  {hook.matcher && (
-                    <div className="hook__matcher">
-                      matcher: <code>{hook.matcher}</code>
-                    </div>
-                  )}
-                </div>
-                <div className="hook__body">
-                  <pre className="hook__command">{hook.command}</pre>
-                  {hook.agentOverrides && (
-                    <div className="hook__overrides">
-                      {Object.entries(hook.agentOverrides).map(
-                        ([agent, ov]) => (
-                          <span
-                            key={agent}
-                            className="hook__overrides-item"
-                          >
-                            <span className="hook__overrides-key">
-                              {agent}:
-                            </span>{' '}
-                            {ov.matcher && <code>matcher={ov.matcher}</code>}
-                            {ov.matcher && ov.command && ' · '}
-                            {ov.command && <code>command override</code>}
-                          </span>
-                        ),
+          {/* ===== hooks ===== */}
+          <section className="hooks">
+            <div className="section-head">
+              <span className="section-head__title">Hooks</span>
+            </div>
+            <div className="hooks__list">
+              {pkg.hooks.map((hook) => {
+                const eventInfo = isEventId(hook.event)
+                  ? EVENT_INFO[hook.event]
+                  : undefined
+                return (
+                  <div key={hook.id} className="hook">
+                    <div className="hook__head">
+                      <div className="hook__id">{hook.id}</div>
+                      {eventInfo && (
+                        <Link
+                          to="/event/$event"
+                          params={{ event: hook.event }}
+                          className="hook__event"
+                        >
+                          {hook.event}
+                        </Link>
+                      )}
+                      {hook.matcher && (
+                        <div className="hook__matcher">
+                          matcher: <code>{hook.matcher}</code>
+                        </div>
                       )}
                     </div>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </section>
-
-        {pkg.files && pkg.files.length > 0 && (
-          <section>
-            <p className="eyebrow">files</p>
-            <ul className="files">
-              {pkg.files.map((f) => (
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
+                    <div className="hook__body">
+                      <pre className="hook__command">{hook.command}</pre>
+                      {hook.agentOverrides && (
+                        <div className="hook__overrides">
+                          {Object.entries(hook.agentOverrides).map(
+                            ([agent, ov]) => (
+                              <span
+                                key={agent}
+                                className="hook__overrides-item"
+                              >
+                                <span className="hook__overrides-key">
+                                  {agent}:
+                                </span>{' '}
+                                {ov.matcher && (
+                                  <code>matcher={ov.matcher}</code>
+                                )}
+                                {ov.matcher && ov.command && ' · '}
+                                {ov.command && (
+                                  <code>command override</code>
+                                )}
+                              </span>
+                            ),
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </section>
-        )}
 
-        <section>
-          <p className="eyebrow">readme</p>
-          <Markdown source={pkg.readmeMd} />
-        </section>
-      </article>
+          {/* ===== files ===== */}
+          {pkg.files && pkg.files.length > 0 && (
+            <section className="files">
+              <div className="section-head">
+                <span className="section-head__title">Files</span>
+              </div>
+              <ul className="files__list">
+                {pkg.files.map((f) => (
+                  <li key={f} className="files__item">
+                    <span className="files__icon" aria-hidden="true">
+                      ▸
+                    </span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* ===== readme ===== */}
+          <section className="readme">
+            <div className="section-head">
+              <span className="section-head__title">README.md</span>
+            </div>
+            <Markdown source={pkg.readmeMd} />
+          </section>
+        </div>
+
+        {/* ===== meta aside ===== */}
+        <aside className="page__aside">
+          <div className="hook-meta">
+            <div className="hook-meta__item">
+              <span className="hook-meta__label hook-meta__label--lg">
+                installs
+              </span>
+              <span className="hook-meta__value hook-meta__value--lg">
+                {pkg.installCountAllTime.toLocaleString()}
+              </span>
+              <Sparkline />
+            </div>
+            <div className="hook-meta__item">
+              <span className="hook-meta__label">events</span>
+              <span className="hook-meta__value">{events.join(', ')}</span>
+            </div>
+            <div className="hook-meta__item">
+              <span className="hook-meta__label">repo</span>
+              <a
+                className="hook-meta__value hook-meta__link"
+                href={`https://github.com/${pkg.owner}/${pkg.repo}`}
+              >
+                <span className="hook-meta__link-text">
+                  {pkg.owner}/{pkg.repo}
+                </span>
+                <span className="hook-meta__arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </div>
+            <div className="hook-meta__item">
+              <span className="hook-meta__label">updated</span>
+              <span className="hook-meta__value">
+                {isoToDate(pkg.updatedAt)}
+              </span>
+            </div>
+          </div>
+        </aside>
+      </div>
     </main>
+  )
+}
+
+/** Decorative upward sparkline — purely visual, not real data. */
+function Sparkline() {
+  return (
+    <svg
+      className="hook-meta__sparkline"
+      viewBox="0 0 180 36"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <path d="M 0 32 L 26 28 L 52 23 L 77 19 L 103 14 L 129 10 L 154 6 L 180 3" />
+    </svg>
   )
 }

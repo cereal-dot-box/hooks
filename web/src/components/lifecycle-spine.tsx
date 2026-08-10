@@ -1,43 +1,115 @@
-import { HOOK_EVENTS, OFF_SPINE_EVENTS, type EventId } from '#/lib/events'
+import { Fragment } from 'react'
 
-type Props = {
-  events: EventId[]
-  variant?: 'preview' | 'detail'
+import {
+  EVENT_INFO,
+  PRIMARY_EVENT_IDS,
+  SECONDARY_EVENT_IDS,
+  type EventId,
+} from '#/lib/events'
+
+type CommonProps = {
+  /** Events the package hooks into (lit on the rail). */
+  events?: EventId[]
 }
 
-export function LifecycleSpine({ events, variant = 'preview' }: Props) {
+type DetailProps = CommonProps & {
+  variant: 'detail'
+}
+
+type FilterProps = CommonProps & {
+  variant: 'filter'
+  /** Currently selected event, or 'all' for none. */
+  activeEvent: EventId | 'all'
+  /** Fired when an event is clicked. Toggling the active event yields 'all'. */
+  onSelect: (event: EventId | 'all') => void
+  /** Package counts per event, for the count badges. */
+  counts: Record<EventId, number>
+}
+
+type Props = DetailProps | FilterProps
+
+export function LifecycleSpine(props: Props) {
+  if (props.variant === 'filter') {
+    return <FilterSpine {...props} />
+  }
+  return <DetailSpine {...props} />
+}
+
+function DetailSpine({ events = [] }: DetailProps) {
   const lit = new Set(events)
-  const offSpineLit = OFF_SPINE_EVENTS.some((e) => lit.has(e))
+  return (
+    <div className="spine-hero">
+      {PRIMARY_EVENT_IDS.map((event) => (
+        <div
+          key={event}
+          className="spine-hero__event"
+          data-active={lit.has(event)}
+          title={EVENT_INFO[event].fires}
+        >
+          <span className="spine-hero__dot" />
+          <span className="spine-hero__name">{event}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function FilterSpine({
+  events = [],
+  activeEvent,
+  onSelect,
+  counts,
+}: FilterProps) {
+  const lit = new Set(events)
+  const onClick = (event: EventId) => {
+    onSelect(activeEvent === event ? 'all' : event)
+  }
 
   return (
-    <div className={`spine spine--${variant}`}>
-      {variant === 'detail' && (
-        <div className="spine__off-spine" data-lit={offSpineLit}>
-          <span className="spine__off-spine-mark" />
-          <span>PreCompact — fires off the timeline</span>
-        </div>
-      )}
-      <ol
-        className="spine__line"
-        role="img"
-        aria-label={
-          events.length === 0
-            ? 'No lifecycle events'
-            : `Hooks into: ${events.join(', ')}`
-        }
-      >
-        {HOOK_EVENTS.map((event) => (
-          <li
-            key={event}
-            className="spine__event"
-            data-lit={lit.has(event)}
-            title={event}
-          >
-            <span className="spine__dot" />
-            <span className="spine__label">{event}</span>
-          </li>
+    <>
+      <div className="spine-hero">
+        {PRIMARY_EVENT_IDS.map((event, i) => (
+          <Fragment key={event}>
+            {i > 0 && (
+              <div className="spine-hero__arrow" aria-hidden="true">
+                ↓
+              </div>
+            )}
+            <button
+              type="button"
+              className="spine-hero__event"
+              data-active={activeEvent === event}
+              data-lit={lit.has(event)}
+              title={EVENT_INFO[event].fires}
+              onClick={() => onClick(event)}
+            >
+              <span className="spine-hero__dot" />
+              <span className="spine-hero__name">{event}</span>
+              <span className="spine-hero__count">{counts[event] ?? 0}</span>
+            </button>
+          </Fragment>
         ))}
-      </ol>
-    </div>
+      </div>
+      <p className="spine-also">
+        <span className="spine-also__head">
+          <span className="spine-also__label">agent-specific</span>
+        </span>
+        {SECONDARY_EVENT_IDS.map((event) => (
+          <button
+            key={event}
+            type="button"
+            className="spine-also__item"
+            data-active={activeEvent === event}
+            data-lit={lit.has(event)}
+            title={EVENT_INFO[event].fires}
+            onClick={() => onClick(event)}
+          >
+            <span className="spine-also__dot" />
+            {event}
+            <span className="spine-also__count">{counts[event] ?? 0}</span>
+          </button>
+        ))}
+      </p>
+    </>
   )
 }

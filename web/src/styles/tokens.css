@@ -1,42 +1,66 @@
+/*
+  agenthooks directory — theme tokens.
+
+  Aesthetic: warm-neutral paper (stone) with a single indigo accent. Inter
+  for UI/prose, JetBrains Mono for system / commands / identifiers. Flat,
+  hairline borders, no shadows. Light-only by design.
+*/
+
 :root {
-  /* Palette — "technical journal": cool paper, neutral ink, ink-blue mark.
-     Deliberately not the warm-cream + terracotta default; the cool cast on the
-     paper reads as engineering documentation rather than editorial. */
-  --page: #eceae3;
-  --page-raised: #f2f0ea;
-  --ink: #16161a;
-  --rule: #c0bbac;
-  --rule-strong: #9a9385;
-  --mark: #1e3a8a;
-  --mark-soft: #dce3f0;
-  --mute: #6f6a60;
+  color-scheme: light;
 
-  /* Type families — display serif for personality, body sans for prose,
-     monospace as the *system* face (chrome, labels, metadata, code). */
-  --font-display: 'Instrument Serif', 'EB Garamond', Georgia, serif;
-  --font-body: 'Mona Sans', Inter, system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  /* surfaces — warm-neutral stone */
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-2: #f5f5f4;
+  --border: #e7e5e4;
+  --border-soft: #efeae6;
 
-  /* Type scale — modular 1.125ish, tuned by eye. */
-  --step--1: 0.8125rem;
-  --step-0: 0.9375rem;
-  --step-1: 1.0625rem;
-  --step-2: 1.375rem;
-  --step-3: 1.75rem;
-  --step-4: 2.5rem;
-  --step-5: 3.75rem;
+  /* ink — warm near-black */
+  --ink: #1c1917;
+  --muted: #78716c;
 
-  --leading-tight: 1.15;
-  --leading-snug: 1.3;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.65;
+  /* accent — indigo */
+  --accent: #4338ca;
+  --accent-light: #ede9fe;
+  --bar-bg: #f3f0ff;
 
-  /* Measure — the reading widths the layout commits to. */
-  --measure: 38rem;
-  --measure-wide: 56rem;
-  --measure-prose: 42rem;
+  /* secondary accents — used sparingly on detail pages */
+  --purple: #7c3aed;
+  --purple-light: #f3e8ff;
 
-  /* Spacing — 4pt grid, hand-picked stops. */
+  /* type — Inter for UI, JetBrains Mono for system text */
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas,
+    monospace;
+  --sans: 'Inter', apple-system, BlinkMacSystemFont, ui-sans-serif,
+    system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  /* shape — soft 6px corners */
+  --r-sm: 4px;
+  --r: 6px;
+
+  /* type scale — px-based, sized for the mock composition */
+  --t-xs: 14px;
+  --t-sm: 15px;
+  --t-base: 17px;
+  --t-md: 18px;
+  --t-lg: 20px;
+  --t-xl: 26px;
+  --t-2xl: 32px;
+
+  /* leading */
+  --leading-tight: 1.25;
+  --leading-snug: 1.35;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.6;
+
+  /* measure — content widths */
+  --content: 1200px;
+  --measure: 760px;
+  --measure-prose: 760px;
+  --detail: 960px;
+
+  /* spacing */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -46,11 +70,4 @@
   --space-7: 3rem;
   --space-8: 4rem;
   --space-9: 6rem;
-
-  --rule-hair: 1px;
-  --rule-thin: 2px;
-
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --weight-semibold: 600;
 }

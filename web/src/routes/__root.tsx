@@ -1,6 +1,7 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 
 import appCss from '../styles.css?url'
+import { Footer } from '#/components/footer'
 import { TopBar } from '#/components/top-bar'
 
 export const Route = createRootRoute({
@@ -14,11 +15,11 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'agenthooks directory' },
+      { title: 'agenthooks — lifecycle hooks for AI coding agents' },
       {
         name: 'description',
         content:
-          'Browse and install hook packages for Claude Code and Codex.',
+          'Installable automations that fire at key moments in your agent\'s run: session start, before a tool runs, on stop. One command to add, one to remove.',
       },
     ],
     links: [
@@ -30,7 +31,7 @@ export const Route = createRootRoute({
       },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
       },
       { rel: 'stylesheet', href: appCss },
     ],
@@ -50,6 +51,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         </a>
         <TopBar />
         <div id="content">{children}</div>
+        <Footer />
         <Scripts />
       </body>
     </html>

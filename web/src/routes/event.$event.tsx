@@ -22,7 +22,7 @@ function EventRoute() {
   const { event, info, packages } = Route.useLoaderData()
 
   return (
-    <main className="page">
+    <main className="page page--narrow">
       <header className="page__hero">
         <p className="eyebrow">filter: event</p>
         <p className="page__hero-lede">{event}</p>

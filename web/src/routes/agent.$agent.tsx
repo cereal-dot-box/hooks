@@ -27,7 +27,7 @@ function AgentRoute() {
   const { agent, info, packages } = Route.useLoaderData()
 
   return (
-    <main className="page">
+    <main className="page page--narrow">
       <header className="page__hero">
         <p className="eyebrow">filter: agent</p>
         <p className="page__hero-lede">{info?.label ?? agent}</p>

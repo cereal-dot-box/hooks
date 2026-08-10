@@ -1,117 +1,256 @@
-.spine {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  font-family: var(--font-mono);
+/*
+  Lifecycle spine — the signature element. Five core events as dots on
+  a rail, with counts per event and a secondary events row underneath.
+
+  Two variants:
+  - detail (default): horizontal 5-column rail, display-only. Lit dots
+    mark events a package hooks into.
+  - filter (inside .lifecycle--filter): vertical, click-to-filter. Each
+    event is a button that toggles `data-active`; the parent listens and
+    filters the board.
+*/
+
+/* ============ core rail (detail: horizontal, display-only) ============ */
+
+.spine-hero {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
 }
 
-.spine__off-spine {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--step--1);
-  color: var(--mute);
-}
-
-.spine__off-spine-mark {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border: var(--rule-hair) solid var(--rule-strong);
-  background: var(--page);
-  transform: rotate(45deg);
-}
-
-.spine__off-spine[data-lit='true'] {
-  color: var(--ink);
-}
-
-.spine__off-spine[data-lit='true'] .spine__off-spine-mark {
-  background: var(--mark);
-  border-color: var(--mark);
-}
-
-.spine__line {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.spine__line::before {
-  content: '';
-  position: absolute;
-  left: 4px;
-  right: 4px;
-  top: 50%;
-  border-top: var(--rule-hair) solid var(--rule);
-  z-index: 0;
-}
-
-.spine__event {
+.spine-hero__event {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
-}
-
-.spine__dot {
-  display: block;
-  background: var(--page);
-  border: var(--rule-hair) solid var(--rule-strong);
-  border-radius: 50%;
-}
-
-.spine__event[data-lit='true'] .spine__dot {
-  background: var(--mark);
-  border-color: var(--mark);
-}
-
-.spine__label {
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  color: var(--mute);
-  white-space: nowrap;
   text-align: center;
-  line-height: var(--leading-tight);
+  color: var(--muted);
+  padding: 0 6px;
+  font: inherit;
+  background: transparent;
+  border: none;
+  cursor: default;
 }
 
-.spine__event[data-lit='true'] .spine__label {
+.spine-hero__event[data-active='true'] {
   color: var(--ink);
-  font-weight: var(--weight-medium);
 }
 
-/* Preview variant — leaderboard rows. No labels, small dots. */
-.spine--preview .spine__dot {
+.spine-hero__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  margin-bottom: 10px;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.spine-hero__event[data-active='true'] .spine-hero__dot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.spine-hero__name {
+  font-family: var(--sans);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.spine-hero__event[data-active='true'] .spine-hero__name {
+  color: var(--accent);
+}
+
+/* ============ filter variant (sidebar: vertical, interactive) ============ */
+
+.lifecycle--filter .spine-hero {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.lifecycle--filter .spine-hero__arrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1;
+  color: var(--muted);
   width: 8px;
-  height: 8px;
+  text-align: center;
+  margin: 3px 0;
 }
 
-.spine--preview .spine__label {
-  display: none;
+.lifecycle--filter .spine-hero__event {
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  gap: 10px;
+  padding: 6px 0;
+  color: var(--ink);
+  cursor: pointer;
+  transition: color 120ms ease;
 }
 
-.spine--preview .spine__off-spine {
-  display: none;
+.lifecycle--filter .spine-hero__event:hover {
+  color: var(--accent);
 }
 
-/* Detail variant — package page. Labels visible, larger dots. */
-.spine--detail .spine__dot {
-  width: 12px;
-  height: 12px;
+.lifecycle--filter .spine-hero__event:hover .spine-hero__dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.25);
 }
 
-.spine--detail .spine__event {
-  min-width: 0;
+.lifecycle--filter .spine-hero__dot {
+  width: 10px;
+  height: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  margin-bottom: 0;
+  flex-shrink: 0;
+  transition: background 120ms ease, border-color 120ms ease,
+    transform 120ms ease;
 }
 
-.spine--detail .spine__label {
-  font-size: var(--step--1);
-  white-space: normal;
-  max-width: 7em;
+.lifecycle--filter .spine-hero__event[data-active='true'] .spine-hero__dot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.lifecycle--filter .spine-hero__name {
+  font-family: var(--sans);
+  font-size: var(--t-md);
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.lifecycle--filter .spine-hero__event:hover .spine-hero__name,
+.lifecycle--filter .spine-hero__event[data-active='true'] .spine-hero__name {
+  color: var(--accent);
+}
+
+.lifecycle--filter .spine-hero__fires {
+  font-size: var(--t-xs);
+  color: var(--muted);
+  line-height: 1.45;
+  max-width: 14ch;
+  margin: 0 auto 8px;
+  display: none; /* hidden in vertical; count badge carries it */
+}
+
+.lifecycle--filter .spine-hero__count {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ secondary events (off-rail) ============ */
+
+.spine-also {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  font-family: var(--sans);
+  font-size: var(--t-sm);
+}
+
+.spine-also__head {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-right: 4px;
+}
+
+.spine-also__label {
+  font-family: var(--sans);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.spine-also__note {
+  font-family: var(--sans);
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+
+.spine-also__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.spine-also__item:hover {
+  color: var(--accent);
+}
+
+.spine-also__item[data-active='true'] {
+  color: var(--accent);
+}
+
+.spine-also__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.spine-also__item:hover .spine-also__dot,
+.spine-also__item[data-active='true'] .spine-also__dot {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.spine-also__count {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ mobile ============ */
+
+@media (max-width: 48rem) {
+  .spine-hero {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .spine-hero__event {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 12px;
+    padding: 8px 0;
+  }
+
+  .spine-hero__dot {
+    margin-bottom: 0;
+  }
+
+  .spine-hero__fires {
+    max-width: none;
+    margin: 0;
+    flex: 1;
+  }
 }

@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>agenthooks (mock)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /*
+        agenthooks frontpage mock.
+
+        System: warm-neutral palette (stone) + indigo accent. Inter for UI,
+        JetBrains Mono for code/commands/identifiers. Flat, hairline borders,
+        no shadows. Self-contained. Edit inline, refresh.
+
+        Levers worth poking:
+          --t-xl (hero headline). Spec didn't define a display size; I set
+            26px for frontpage hierarchy above the 20px page-title baseline.
+          Dark mode dropped (spec is light-only warm-neutral). Ask to re-add.
+      */
+
+      :root {
+        color-scheme: light;
+
+        --bg: #fafaf9;
+        --surface: #ffffff;
+        --surface-2: #f5f5f4;
+        --border: #e7e5e4;
+        --ink: #1c1917;
+        --muted: #78716c;
+        --accent: #4338ca;
+        --accent-light: #ede9fe;
+        --bar-bg: #f3f0ff;
+
+        --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas,
+          monospace;
+        --sans: 'Inter', apple-system, BlinkMacSystemFont, ui-sans-serif,
+          system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+
+        --r: 6px;
+        --r-sm: 4px;
+
+        --t-xs: 14px;
+        --t-sm: 15px;
+        --t-base: 17px;
+        --t-md: 18px;
+        --t-lg: 20px;
+        --t-xl: 26px;
+
+        --content: 1200px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      * {
+        margin: 0;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: var(--t-base);
+        line-height: 1.6;
+      }
+      a {
+        color: var(--ink);
+        text-decoration: none;
+        transition: color 120ms ease;
+      }
+      a:hover {
+        color: var(--accent);
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      ::selection {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+
+      /* ===== topbar */
+      .topbar {
+        border-bottom: 1px solid var(--border);
+        background: var(--bg);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .topbar__inner {
+        max-width: var(--content);
+        margin: 0 auto;
+        padding: 16px 24px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+      }
+      .topbar__brand {
+        font-size: var(--t-lg);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+      .topbar__brand:hover {
+        color: var(--ink);
+      }
+      .topbar__brand-suffix {
+        color: var(--muted);
+        font-weight: 400;
+      }
+      .topbar__nav {
+        display: flex;
+        align-items: baseline;
+        gap: 22px;
+        font-size: var(--t-sm);
+      }
+      .topbar__nav a {
+        color: var(--muted);
+      }
+      .topbar__nav a:hover {
+        color: var(--ink);
+      }
+
+      /* ===== page shell */
+      .page {
+        max-width: var(--content);
+        margin: 0 auto;
+        padding: 64px 24px 96px;
+      }
+
+      /* ===== section primitives */
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        gap: 16px;
+      }
+      .section-head__title {
+        font-size: var(--t-sm);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+      }
+      .section-head__title--lg {
+        font-size: var(--t-lg);
+        font-weight: 500;
+        text-transform: none;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+      .section-head__hint {
+        font-size: var(--t-xs);
+        color: var(--muted);
+      }
+
+      /* sections divided by hairline + 40px rhythm */
+      .hero,
+      .usage {
+        padding-bottom: 40px;
+        margin-bottom: 40px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* main + sidebar layout: leaderboard primary, lifecycle aside */
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 240px;
+        gap: 56px;
+        align-items: start;
+      }
+      .layout .lifecycle {
+        position: sticky;
+        top: 24px;
+        padding-bottom: 0;
+        margin-bottom: 0;
+        border-bottom: none;
+      }
+
+      /* vertical spine orientation inside the sidebar */
+      .layout .spine-hero {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .layout .spine-hero__event {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        gap: 10px;
+        padding: 6px 0;
+      }
+      .layout .spine-hero__arrow {
+        font-family: var(--mono);
+        font-size: 10px;
+        line-height: 1;
+        color: var(--muted);
+        width: 8px;
+        text-align: center;
+        margin: 3px 0;
+      }
+      .layout .spine-hero__dot {
+        margin-bottom: 0;
+      }
+      .layout .spine-hero__name {
+        margin-bottom: 0;
+      }
+      .layout .spine-hero__fires {
+        max-width: none;
+        margin: 0;
+        flex: 1;
+      }
+
+      /* ===== hero */
+      .hero__eyebrow {
+        font-size: var(--t-sm);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+      .hero__h1 {
+        font-size: var(--t-xl);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.25;
+        margin-bottom: 12px;
+        text-wrap: balance;
+      }
+      .hero__h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+      .hero__sub {
+        font-size: var(--t-base);
+        color: var(--muted);
+        max-width: 56ch;
+        margin-bottom: 0;
+      }
+      .hero {
+        padding-bottom: 16px;
+        margin-bottom: 24px;
+        border-bottom: none;
+      }
+
+      /* hero install: card + outline copy button */
+      .hero__install {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      /* install: flat card, hairline, no shadow */
+      .install {
+        display: inline-flex;
+        align-items: stretch;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        overflow: hidden;
+        max-width: 100%;
+      }
+      .install__prompt {
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        font-family: var(--mono);
+        font-size: var(--t-sm);
+        color: var(--muted);
+        background: var(--bar-bg);
+        border-right: 1px solid var(--border);
+        user-select: none;
+      }
+      .install__command {
+        font-family: var(--mono);
+        font-size: var(--t-sm);
+        padding: 12px 14px;
+        color: var(--ink);
+        white-space: nowrap;
+        overflow-x: auto;
+      }
+      .install[data-mode='prompt'] {
+        flex: 1;
+      }
+      .install[data-mode='prompt'] .install__command {
+        font-family: var(--sans);
+        font-size: var(--t-sm);
+        line-height: 1.55;
+        white-space: normal;
+        word-break: break-word;
+        overflow-x: visible;
+      }
+      /* outline button: shared (copy, clear, etc.) */
+      .btn-outline {
+        font-family: var(--sans);
+        font-size: var(--t-xs);
+        font-weight: 500;
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        padding: 4px 12px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: color 120ms ease, background 120ms ease,
+          border-color 120ms ease;
+      }
+      .btn-outline:hover {
+        color: var(--ink);
+        background: var(--surface);
+      }
+      .install__copy[data-copied='true'] {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      /* ===== lifecycle showcase: signature element */
+      .spine-hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0;
+      }
+      .spine-hero__event {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        color: var(--ink);
+        padding: 0 6px;
+        font: inherit;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .spine-hero__event:hover {
+        color: var(--accent);
+      }
+      .spine-hero__event[data-active='true'] .spine-hero__dot {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .spine-hero__event[data-active='true'] .spine-hero__name {
+        color: var(--accent);
+      }
+      .spine-hero__dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        margin-bottom: 14px;
+        transition: background 120ms ease, border-color 120ms ease,
+          transform 120ms ease;
+      }
+      .spine-hero__event:hover .spine-hero__dot {
+        background: var(--accent);
+        border-color: var(--accent);
+        transform: scale(1.25);
+      }
+      .spine-hero__name {
+        font-family: var(--sans);
+        font-size: var(--t-md);
+        font-weight: 500;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+      .spine-hero__event:hover .spine-hero__name {
+        color: var(--accent);
+      }
+      .spine-hero__fires {
+        font-size: var(--t-xs);
+        color: var(--muted);
+        line-height: 1.45;
+        max-width: 14ch;
+        margin: 0 auto 8px;
+      }
+      .spine-hero__count {
+        font-family: var(--mono);
+        font-size: var(--t-xs);
+        color: var(--accent);
+        background: var(--accent-light);
+        padding: 2px 7px;
+        border-radius: var(--r-sm);
+      }
+
+      /* secondary events: acknowledged, not on the core rail */
+      .spine-also {
+        margin-top: 28px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 18px;
+        font-family: var(--sans);
+        font-size: var(--t-sm);
+      }
+      .spine-also__head {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-right: 4px;
+      }
+      .spine-also__label {
+        font-family: var(--sans);
+        font-size: var(--t-xs);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+      }
+      .spine-also__note {
+        font-family: var(--sans);
+        font-size: var(--t-xs);
+        color: var(--muted);
+      }
+      .spine-also__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font: inherit;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: color 120ms ease;
+      }
+      .spine-also__item:hover {
+        color: var(--accent);
+      }
+      .spine-also__item[data-active='true'] {
+        color: var(--accent);
+      }
+      .spine-also__item[data-active='true'] .spine-also__dot {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .spine-also__dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        transition: border-color 120ms ease;
+      }
+      .spine-also__item:hover .spine-also__dot {
+        border-color: var(--accent);
+      }
+      .spine-also__count {
+        font-family: var(--mono);
+        font-size: var(--t-xs);
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ===== board tools: search + hook/repo filters */
+      .board__tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .search {
+        display: inline-flex;
+        align-items: center;
+        flex: 1 0 100%;
+        min-width: 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        transition: border-color 120ms ease;
+      }
+      .search:focus-within {
+        border-color: var(--accent);
+      }
+      .search__icon {
+        color: var(--muted);
+        padding: 0 10px 0 16px;
+        flex-shrink: 0;
+      }
+      .search__input {
+        flex: 1;
+        min-width: 0;
+        font-family: var(--sans);
+        font-size: var(--t-sm);
+        padding: 12px 16px 12px 0;
+        background: transparent;
+        border: none;
+        color: var(--ink);
+        appearance: none;
+        -webkit-appearance: none;
+      }
+      .search__input::placeholder {
+        color: var(--muted);
+      }
+      .search__input:focus {
+        outline: none;
+      }
+      .field {
+        display: inline-flex;
+        align-items: stretch;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        transition: border-color 120ms ease;
+      }
+      .field:focus-within {
+        border-color: var(--accent);
+      }
+      .field__label {
+        display: flex;
+        align-items: center;
+        font-family: var(--sans);
+        font-size: var(--t-xs);
+        color: var(--muted);
+        padding: 0 8px 0 12px;
+        text-transform: lowercase;
+        border-right: 1px solid var(--border);
+      }
+      .field__select {
+        font-family: var(--sans);
+        font-size: var(--t-sm);
+        color: var(--ink);
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 4px 28px 4px 10px;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%2378716C' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+      }
+      .field__select:focus {
+        outline: none;
+      }
+      .board__empty {
+        padding: 48px 0;
+        font-family: var(--mono);
+        font-size: var(--t-sm);
+        color: var(--muted);
+        text-align: center;
+      }
+
+      /* ===== segmented tabs: toggle group */
+      .tabs {
+        display: inline-flex;
+        gap: 2px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        padding: 2px;
+        margin-bottom: 8px;
+      }
+      .tabs__tab {
+        font-family: var(--sans);
+        font-size: var(--t-sm);
+        padding: 4px 10px;
+        color: var(--muted);
+        background: transparent;
+        border: none;
+        border-radius: var(--r-sm);
+        cursor: pointer;
+        transition: color 120ms ease, background 120ms ease;
+      }
+      .tabs__tab:hover {
+        color: var(--ink);
+      }
+      .tabs__tab[aria-selected='true'] {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+
+      /* group-by segmented control sits in the section head */
+      .tabs--group,
+      .tabs--usage {
+        margin-bottom: 0;
+      }
+      .usage .section-head {
+        justify-content: flex-start;
+        gap: 14px;
+      }
+
+      /* ===== leaderboard rows */
+      .list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+        align-items: baseline;
+        gap: 28px;
+        padding: 18px 12px;
+        border-bottom: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        transition: background 120ms ease;
+      }
+      .row:hover {
+        background: var(--surface);
+      }
+      .row__rank {
+        font-family: var(--mono);
+        font-size: var(--t-sm);
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+        user-select: none;
+      }
+      .row__main {
+        min-width: 0;
+      }
+      .row__name {
+        font-family: var(--sans);
+        font-size: var(--t-md);
+        font-weight: 500;
+        color: var(--ink);
+        letter-spacing: -0.005em;
+      }
+      .row__name:hover {
+        color: var(--accent);
+      }
+      .row__repo {
+        margin-top: 2px;
+        font-family: var(--mono);
+        font-size: var(--t-xs);
+        color: var(--muted);
+      }
+      .row__repo-sep {
+        color: var(--border);
+        margin: 0 0.3em;
+      }
+      .row__desc {
+        margin-top: 6px;
+        font-size: 16px;
+        color: var(--muted);
+        max-width: 60ch;
+      }
+      .row__events {
+        margin-top: 8px;
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      .row__title {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .row__events {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      .row__event {
+        font-family: var(--mono);
+        font-size: var(--t-xs);
+        color: var(--muted);
+        background: var(--surface-2);
+        padding: 2px 8px;
+        border-radius: var(--r-sm);
+      }
+      .row__num {
+        font-family: var(--mono);
+        font-size: 16px;
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+        white-space: nowrap;
+      }
+      .row__num-label {
+        display: block;
+        font-size: var(--t-xs);
+        color: var(--muted);
+        text-transform: lowercase;
+        margin-bottom: 2px;
+      }
+      .row__num--strong {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .row__num--soft {
+        color: var(--muted);
+      }
+
+      /* ===== footer */
+      .footer {
+        border-top: 1px solid var(--border);
+      }
+      .footer__inner {
+        max-width: var(--content);
+        margin: 0 auto;
+        padding: 32px 24px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: var(--t-xs);
+        color: var(--muted);
+      }
+      .footer__inner a {
+        color: var(--muted);
+      }
+      .footer__inner a:hover {
+        color: var(--ink);
+      }
+
+      /* ===== mobile */
+      @media (max-width: 48rem) {
+        .topbar__inner {
+          padding: 12px 16px;
+        }
+        .topbar__nav {
+          gap: 14px;
+        }
+        .page {
+          padding: 40px 16px 64px;
+        }
+        .layout {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        .layout .lifecycle {
+          position: static;
+        }
+        .spine-hero {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+        .spine-hero__event {
+          flex-direction: row;
+          align-items: center;
+          text-align: left;
+          gap: 12px;
+          padding: 6px 0;
+        }
+        .spine-hero__dot {
+          margin-bottom: 0;
+        }
+        .spine-hero__fires {
+          max-width: none;
+          margin: 0;
+          flex: 1;
+        }
+        .row {
+          grid-template-columns: 28px 1fr;
+          gap: 12px;
+        }
+        .row__num {
+          grid-column: 2;
+          text-align: left;
+          margin-top: 4px;
+        }
+        .row__num-label {
+          display: inline;
+          margin-right: 6px;
+        }
+        .footer__inner {
+          flex-direction: column;
+          padding: 24px 16px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="topbar" aria-label="primary">
+      <div class="topbar__inner">
+        <a href="/" class="topbar__brand">agenthooks</a>
+        <div class="topbar__nav">
+          <a href="#lifecycle">events</a>
+          <a href="#agents">agents</a>
+          <a href="#search">search</a>
+          <a href="https://github.com/jared-paul/agenthooks">github ↗</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="page">
+      <!-- ============ HERO ============ -->
+      <section class="hero">
+        <p class="hero__eyebrow">the open hook registry</p>
+        <h1 class="hero__h1">
+          Lifecycle hooks <em>for AI coding agents.</em>
+        </h1>
+        <p class="hero__sub">
+          Installable automations that fire at key moments in your agent's
+          run: session start, before a tool runs, on stop. One command to add,
+          one to remove. No magic, just shell.
+        </p>
+      </section>
+
+      <!-- ============ USAGE ============ -->
+      <section class="usage" id="usage">
+        <div class="section-head">
+          <span class="section-head__title">Usage</span>
+          <div class="tabs tabs--usage" role="tablist" aria-label="usage mode">
+            <button class="tabs__tab" aria-selected="true" data-mode="command">Command</button>
+            <button class="tabs__tab" aria-selected="false" data-mode="prompt">Prompt</button>
+          </div>
+        </div>
+        <div class="hero__install">
+          <div class="install" data-mode="command">
+            <span class="install__prompt">$</span>
+            <code class="install__command">npx agenthooks add jared-paul/session-banner</code>
+          </div>
+          <div class="install" data-mode="prompt" hidden>
+            <span class="install__prompt">›</span>
+            <code class="install__command">Run `npx agenthooks add -y jared-paul/session-banner` now. Hooks resolve at ~/.agents/hooks/&lt;hookId&gt;/.</code>
+          </div>
+          <button class="btn-outline install__copy" type="button">copy</button>
+        </div>
+      </section>
+
+      <!-- ============ MAIN + SIDEBAR LAYOUT ============ -->
+      <div class="layout">
+        <!-- ============ MOST INSTALLED (main) ============ -->
+        <section class="board">
+          <div class="section-head">
+            <span class="section-head__title section-head__title--lg">Most installed</span>
+            <div class="tabs tabs--group" role="tablist" aria-label="group by">
+              <button class="tabs__tab" aria-selected="true" data-group="hook">
+                By hook
+              </button>
+              <button class="tabs__tab" aria-selected="false" data-group="repo">
+                By repo
+              </button>
+            </div>
+          </div>
+
+          <div class="board__tools">
+            <label class="search">
+              <svg class="search__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <circle cx="7" cy="7" r="5" />
+                <path d="M11 11l3 3" stroke-linecap="round" />
+              </svg>
+              <input class="search__input" id="search" type="search" placeholder="search packages…" aria-label="search packages" />
+            </label>
+          </div>
+
+          <ol class="list" id="list"></ol>
+          <p class="board__empty" id="board-empty" hidden>no packages match your filters.</p>
+        </section>
+
+        <!-- ============ LIFECYCLE (sidebar) ============ -->
+        <aside class="lifecycle" id="lifecycle">
+          <div class="section-head">
+            <span class="section-head__title">The lifecycle</span>
+          </div>
+          <div class="spine-hero" id="spine-hero">
+            <!-- events injected by script -->
+          </div>
+          <p class="spine-also" id="spine-also">
+            <span class="spine-also__head">
+              <span class="spine-also__label">agent-specific</span>
+            </span>
+            <!-- secondary events injected by script -->
+          </p>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <span>an open registry · MIT · built in public</span>
+        <span><a href="https://github.com/jared-paul/agenthooks">github</a> · <a href="#publish">publish a hook →</a></span>
+      </div>
+    </footer>
+
+    <script>
+      // ---- data (mirror of web/src/data/packages.ts subset) ----
+      const EVENTS = [
+        ['SessionStart', 'Session begins, resumes, or clears.'],
+        ['UserPromptSubmit', 'User submits a prompt.'],
+        ['PreToolUse', 'Before each tool call.'],
+        ['PostToolUse', 'After each tool call.'],
+        ['Stop', 'Agent stops, returns control.'],
+      ]
+
+      const SECONDARY_EVENTS = [
+        ['Notification', 'Agent emits a notification.'],
+        ['SubagentStop', 'A subagent finishes its task.'],
+        ['SessionEnd', 'Session ends.'],
+      ]
+
+      const PACKAGES = [
+        {
+          name: 'bash-audit', owner: 'octo-security', repo: 'bash-audit',
+          desc: 'Log every Bash command an agent runs to an append-only audit file.',
+          events: ['PreToolUse'], allTime: 3921, trending: 88, hot: 142,
+        },
+        {
+          name: 'write-protector', owner: 'octo-security', repo: 'write-protector',
+          desc: 'Block writes outside the current project tree. Stops an agent from editing ~/.ssh or ~/.aws.',
+          events: ['PreToolUse'], allTime: 2244, trending: 61, hot: 113,
+        },
+        {
+          name: 'session-banner', owner: 'jared-paul', repo: 'session-banner',
+          desc: 'Print a one-line banner at session start so you never forget which agent you’re in.',
+          events: ['SessionStart'], allTime: 1842, trending: 47, hot: 91,
+        },
+        {
+          name: 'git-auto-commit', owner: 'jared-paul', repo: 'git-auto-commit',
+          desc: 'Auto-commit work-in-progress when the agent stops, so the working tree is never dirty between turns.',
+          events: ['Stop'], allTime: 1487, trending: 33, hot: 58,
+        },
+        {
+          name: 'precommit-workflow', owner: 'jared-paul', repo: 'precommit-workflow',
+          desc: 'Run lint and typecheck on every file write, then again before the agent stops.',
+          events: ['PostToolUse', 'Stop'], allTime: 1102, trending: 28, hot: 49,
+        },
+        {
+          name: 'compact-summary', owner: 'jared-paul', repo: 'compact-summary',
+          desc: 'Snapshot the conversation to disk before each context compaction, so you can recover what was dropped.',
+          events: ['PreCompact'], allTime: 829, trending: 22, hot: 41,
+        },
+        {
+          name: 'notification-bridge', owner: 'toolwatch', repo: 'notification-bridge',
+          desc: 'Forward agent notifications to Slack so you can walk away during long runs.',
+          events: ['Notification'], allTime: 716, trending: 18, hot: 35,
+        },
+        {
+          name: 'prompt-echo', owner: 'hookbook', repo: 'prompt-echo',
+          desc: 'Echo every prompt you submit into a daily markdown journal.',
+          events: ['UserPromptSubmit'], allTime: 612, trending: 14, hot: 27,
+        },
+        {
+          name: 'tool-latency', owner: 'toolwatch', repo: 'tool-latency',
+          desc: 'Record how long each tool call took. Surfaces slow tools in a daily summary.',
+          events: ['PostToolUse'], allTime: 402, trending: 9, hot: 19,
+        },
+        {
+          name: 'codex-startup-only', owner: 'octo-security', repo: 'codex-startup-only',
+          desc: 'SessionStart banner tuned for Codex; fires on startup or resume, not on /clear.',
+          events: ['SessionStart'], allTime: 318, trending: 11, hot: 18,
+        },
+        {
+          name: 'session-cleanup', owner: 'jared-paul', repo: 'session-cleanup',
+          desc: 'Empty the agent’s tmp dir at session end so disk doesn’t fill with stale scratch files.',
+          events: ['SessionEnd'], allTime: 247, trending: 7, hot: 15,
+        },
+        {
+          name: 'subagent-results', owner: 'hookbook', repo: 'subagent-results',
+          desc: 'POST each subagent’s final output to a webhook so background work lands in your chat.',
+          events: ['SubagentStop'], allTime: 195, trending: 6, hot: 13,
+        },
+      ]
+
+      const compact = (n) =>
+        n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n)
+
+      // ---- lifecycle rail ----
+      const spine = document.getElementById('spine-hero')
+      const countByEvent = (ev) =>
+        PACKAGES.filter((p) => p.events.includes(ev)).length
+      spine.insertAdjacentHTML(
+        'beforeend',
+        EVENTS.map(
+          ([name, fires]) => `
+        <button type="button" class="spine-hero__event" data-event="${name}" title="${fires}">
+          <span class="spine-hero__dot"></span>
+          <span class="spine-hero__name">${name}</span>
+          <span class="spine-hero__count">${countByEvent(name)}</span>
+        </button>`,
+        ).join('<div class="spine-hero__arrow" aria-hidden="true">↓</div>'),
+      )
+
+      // ---- secondary events (also hookable, off the core rail) ----
+      const also = document.getElementById('spine-also')
+      also.insertAdjacentHTML(
+        'beforeend',
+        SECONDARY_EVENTS.map(
+          ([name, fires]) => `
+        <button type="button" class="spine-also__item" data-event="${name}" title="${fires}">
+          <span class="spine-also__dot"></span>${name}<span class="spine-also__count">${countByEvent(name)}</span>
+        </button>`,
+        ).join(''),
+      )
+
+      // ---- most installed: search + repo filter + group-by + sort (hook filter = lifecycle) ----
+      const listEl = document.getElementById('list')
+      const emptyEl = document.getElementById('board-empty')
+      const groupTabs = document.querySelectorAll('.tabs--group .tabs__tab')
+      const searchInput = document.getElementById('search')
+      const spineButtons = document.querySelectorAll('[data-event]')
+
+      const state = {
+        q: '',
+        hook: 'all',
+        sort: 'all-time',
+        group: 'hook',
+      }
+
+      function rowHtml(p, rank) {
+        return `
+          <li class="row">
+            <div class="row__rank">${String(rank).padStart(2, '0')}</div>
+            <div class="row__main">
+              <div class="row__title">
+                <a class="row__name" href="#${p.owner}/${p.repo}/${p.name}">${p.name}</a>
+                <span class="row__events">
+                  ${p.events.map((e) => `<span class="row__event">${e}</span>`).join('')}
+                </span>
+              </div>
+              <div class="row__repo">
+                <span>${p.owner}</span><span class="row__repo-sep">/</span><span>${p.repo}</span>
+              </div>
+            </div>
+            <div class="row__num row__num--strong">
+              <span class="row__num-label">installs</span>${compact(p.allTime)}
+            </div>
+          </li>`
+      }
+
+      function syncSpine() {
+        spineButtons.forEach((b) => {
+          b.dataset.active = b.dataset.event === state.hook ? 'true' : 'false'
+        })
+      }
+
+      const eventOrder = [...EVENTS, ...SECONDARY_EVENTS].map(([n]) => n)
+      function primaryEvent(p) {
+        for (const e of p.events) {
+          if (eventOrder.includes(e)) return e
+        }
+        return p.events[0]
+      }
+      const hookRank = (e) => {
+        const i = eventOrder.indexOf(e)
+        return i === -1 ? eventOrder.length : i
+      }
+
+      function render() {
+        const key = state.sort === 'all-time' ? 'allTime' : state.sort
+        const q = state.q.trim().toLowerCase()
+        const filtered = PACKAGES.filter((p) => {
+          const matchesQ =
+            !q ||
+            p.name.toLowerCase().includes(q) ||
+            p.desc.toLowerCase().includes(q) ||
+            p.owner.toLowerCase().includes(q) ||
+            p.repo.toLowerCase().includes(q)
+          const matchesHook = state.hook === 'all' || p.events.includes(state.hook)
+          return matchesQ && matchesHook
+        })
+
+        const ordered = [...filtered].sort((a, b) => {
+          if (state.group === 'hook') {
+            const ra = hookRank(primaryEvent(a))
+            const rb = hookRank(primaryEvent(b))
+            if (ra !== rb) return ra - rb
+          } else if (a.owner !== b.owner) {
+            return a.owner.localeCompare(b.owner)
+          }
+          return b[key] - a[key]
+        })
+
+        let html = ''
+        ordered.forEach((p, i) => {
+          html += rowHtml(p, i + 1)
+        })
+        listEl.innerHTML = html
+        emptyEl.hidden = filtered.length !== 0
+        syncSpine()
+      }
+      render()
+
+      searchInput.addEventListener('input', (e) => {
+        state.q = e.target.value
+        render()
+      })
+      spineButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.hook =
+            state.hook === btn.dataset.event ? 'all' : btn.dataset.event
+          render()
+        })
+      })
+      groupTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          groupTabs.forEach((t) => t.setAttribute('aria-selected', 'false'))
+          tab.setAttribute('aria-selected', 'true')
+          state.group = tab.dataset.group
+          render()
+        })
+      })
+
+      // ---- usage tabs (command ↔ prompt) ----
+      const usageTabs = document.querySelectorAll('.tabs--usage .tabs__tab')
+      const installCards = document.querySelectorAll('.hero__install [data-mode]')
+      usageTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          usageTabs.forEach((t) => t.setAttribute('aria-selected', 'false'))
+          tab.setAttribute('aria-selected', 'true')
+          const mode = tab.dataset.mode
+          installCards.forEach((el) => {
+            el.hidden = el.dataset.mode !== mode
+          })
+        })
+      })
+
+      // ---- copy button ----
+      const copyBtn = document.querySelector('.install__copy')
+      copyBtn.addEventListener('click', () => {
+        const visible = document.querySelector('.hero__install [data-mode]:not([hidden]) .install__command')
+        const cmd = (visible ?? document.querySelector('.install__command')).textContent
+        navigator.clipboard?.writeText(cmd)
+        copyBtn.setAttribute('data-copied', 'true')
+        copyBtn.textContent = 'copied'
+        setTimeout(() => {
+          copyBtn.removeAttribute('data-copied')
+          copyBtn.textContent = 'copy'
+        }, 1200)
+      })
+    </script>
+  </body>
+</html>
