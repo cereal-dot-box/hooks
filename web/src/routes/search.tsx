@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 
+import { Breadcrumb } from '#/components/breadcrumb'
 import { PackageRow } from '#/components/package-row'
 import { searchPackages } from '#/data/server-fns'
 
@@ -26,6 +27,7 @@ function SearchRoute() {
 
   return (
     <main className="page page--narrow">
+      <Breadcrumb items={[{ node: 'search', current: true }]} />
       <header className="page__hero">
         <p className="eyebrow">search</p>
         <form className="search-form" method="get" action="/search">

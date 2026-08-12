@@ -1,5 +1,6 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 
+import { Breadcrumb } from '#/components/breadcrumb'
 import { PackageRow } from '#/components/package-row'
 import { getPackagesByEvent } from '#/data/server-fns'
 import { EVENT_INFO, isEventId } from '#/lib/events'
@@ -23,6 +24,12 @@ function EventRoute() {
 
   return (
     <main className="page page--narrow">
+      <Breadcrumb
+        items={[
+          { node: 'events' },
+          { node: event, current: true },
+        ]}
+      />
       <header className="page__hero">
         <p className="eyebrow">filter: event</p>
         <p className="page__hero-lede">{event}</p>

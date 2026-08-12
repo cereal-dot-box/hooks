@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { Breadcrumb } from '#/components/breadcrumb'
 import { PackageRow } from '#/components/package-row'
 import { getPackagesByRepo } from '#/data/server-fns'
 
@@ -21,6 +22,9 @@ function RepoRoute() {
 
   return (
     <main className="page page--narrow">
+      <Breadcrumb
+        items={[{ node: `${owner}/${repo}`, current: true }]}
+      />
       <header className="page__hero">
         <p className="eyebrow">repo</p>
         <p className="page__hero-lede">

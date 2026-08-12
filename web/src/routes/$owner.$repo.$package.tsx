@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 
+import { Breadcrumb } from '#/components/breadcrumb'
 import { InstallCommand } from '#/components/install-command'
 import { Markdown } from '#/components/markdown'
 import { getPackage } from '#/data/server-fns'
@@ -30,25 +31,25 @@ function PackageDetail() {
 
   return (
     <main className="page">
-      <nav className="breadcrumb" aria-label="breadcrumb">
-        <Link to="/">@cerealbox/hooks</Link>
-        <span className="breadcrumb__sep">/</span>
-        <Link
-          to="/$owner/$repo"
-          params={{ owner: pkg.owner, repo: pkg.repo }}
-        >
-          {pkg.owner}
-        </Link>
-        <span className="breadcrumb__sep">/</span>
-        <Link
-          to="/$owner/$repo"
-          params={{ owner: pkg.owner, repo: pkg.repo }}
-        >
-          {pkg.repo}
-        </Link>
-        <span className="breadcrumb__sep">/</span>
-        <span className="breadcrumb__current">{pkg.name}</span>
-      </nav>
+      <Breadcrumb
+        items={[
+          {
+            node: (
+              <Link to="/$owner/$repo" params={{ owner: pkg.owner, repo: pkg.repo }}>
+                {pkg.owner}
+              </Link>
+            ),
+          },
+          {
+            node: (
+              <Link to="/$owner/$repo" params={{ owner: pkg.owner, repo: pkg.repo }}>
+                {pkg.repo}
+              </Link>
+            ),
+          },
+          { node: pkg.name, current: true },
+        ]}
+      />
 
       <div className="page__cols">
         <div className="page__content">

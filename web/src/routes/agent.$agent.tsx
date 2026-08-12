@@ -1,5 +1,6 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 
+import { Breadcrumb } from '#/components/breadcrumb'
 import { PackageRow } from '#/components/package-row'
 import { AGENTS } from '#/data/packages'
 import { getPackagesByAgent } from '#/data/server-fns'
@@ -28,6 +29,12 @@ function AgentRoute() {
 
   return (
     <main className="page page--narrow">
+      <Breadcrumb
+        items={[
+          { node: 'agents' },
+          { node: info?.label ?? agent, current: true },
+        ]}
+      />
       <header className="page__hero">
         <p className="eyebrow">filter: agent</p>
         <p className="page__hero-lede">{info?.label ?? agent}</p>
