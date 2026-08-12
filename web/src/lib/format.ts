@@ -6,6 +6,12 @@ export function compactCount(n: number): string {
   return `${(n / 1_000_000).toFixed(1)}M`
 }
 
+/** Signed integer for delta columns: 47 → "+47", -3 → "-3". */
+export function signedCount(n: number): string {
+  if (n > 0) return `+${n}`
+  return String(n)
+}
+
 /** Render an ISO date as YYYY-MM-DD. */
 export function isoToDate(iso: string): string {
   // Trust the source; just trim the time portion.

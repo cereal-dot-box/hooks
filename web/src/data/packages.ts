@@ -17,7 +17,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'session-banner',
     owner: 'jared-paul',
-    repo: 'session-banner',
+    repo: 'myhooks',
     name: 'session-banner',
     description: 'Print a one-line banner at session start so you never forget which agent you’re in.',
     readmeMd: [
@@ -52,7 +52,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'bash-audit',
     owner: 'octo-security',
-    repo: 'bash-audit',
+    repo: 'audit-hooks',
     name: 'bash-audit',
     description: 'Log every Bash command an agent runs to an append-only audit file.',
     readmeMd: [
@@ -81,7 +81,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'write-protector',
     owner: 'octo-security',
-    repo: 'write-protector',
+    repo: 'audit-hooks',
     name: 'write-protector',
     description: 'Block writes outside the current project tree. Stops an agent from editing ~/.ssh or ~/.aws.',
     readmeMd: [
@@ -110,7 +110,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'prompt-echo',
     owner: 'hookbook',
-    repo: 'prompt-echo',
+    repo: 'library',
     name: 'prompt-echo',
     description: 'Echo every prompt you submit into a daily markdown journal.',
     readmeMd: [
@@ -136,7 +136,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'git-auto-commit',
     owner: 'jared-paul',
-    repo: 'git-auto-commit',
+    repo: 'myhooks',
     name: 'git-auto-commit',
     description: 'Auto-commit work-in-progress when the agent stops, so the working tree is never dirty between turns.',
     readmeMd: [
@@ -164,7 +164,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'tool-latency',
     owner: 'toolwatch',
-    repo: 'tool-latency',
+    repo: 'observability',
     name: 'tool-latency',
     description: 'Record how long each tool call took. Surfaces slow tools in a daily summary.',
     readmeMd: [
@@ -190,7 +190,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'compact-summary',
     owner: 'jared-paul',
-    repo: 'compact-summary',
+    repo: 'myhooks',
     name: 'compact-summary',
     description: 'Snapshot the conversation to disk before each context compaction, so you can recover what was dropped.',
     readmeMd: [
@@ -216,7 +216,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'codex-startup-only',
     owner: 'octo-security',
-    repo: 'codex-startup-only',
+    repo: 'audit-hooks',
     name: 'codex-startup-only',
     description: 'SessionStart banner tuned for Codex — fires on startup or resume, not on /clear.',
     readmeMd: [
@@ -243,7 +243,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'subagent-results',
     owner: 'hookbook',
-    repo: 'subagent-results',
+    repo: 'library',
     name: 'subagent-results',
     description: 'POST each subagent’s final output to a webhook so background work lands in your chat.',
     readmeMd: [
@@ -269,7 +269,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'notification-bridge',
     owner: 'toolwatch',
-    repo: 'notification-bridge',
+    repo: 'observability',
     name: 'notification-bridge',
     description: 'Forward agent notifications to Slack so you can walk away during long runs.',
     readmeMd: [
@@ -295,7 +295,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'precommit-workflow',
     owner: 'jared-paul',
-    repo: 'precommit-workflow',
+    repo: 'myhooks',
     name: 'precommit-workflow',
     description: 'Run lint and typecheck on every file write, then again before the agent stops.',
     readmeMd: [
@@ -330,7 +330,7 @@ export const PACKAGES: Package[] = [
   {
     id: 'session-cleanup',
     owner: 'jared-paul',
-    repo: 'session-cleanup',
+    repo: 'myhooks',
     name: 'session-cleanup',
     description: 'Empty the agent’s tmp dir at session end so disk doesn’t fill with stale scratch files.',
     readmeMd: [
