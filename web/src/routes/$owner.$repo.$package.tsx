@@ -3,7 +3,6 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { InstallCommand } from '#/components/install-command'
 import { Markdown } from '#/components/markdown'
 import { getPackage } from '#/data/server-fns'
-import { EVENT_INFO, isEventId } from '#/lib/events'
 import { isoToDate } from '#/lib/format'
 
 export const Route = createFileRoute('/$owner/$repo/$package')({
@@ -63,67 +62,6 @@ function PackageDetail() {
               <span className="section-head__title">Usage</span>
             </div>
             <InstallCommand command={installCommand} prompt={installPrompt} />
-          </section>
-
-          {/* ===== hooks ===== */}
-          <section className="hooks">
-            <div className="section-head">
-              <span className="section-head__title">Hooks</span>
-            </div>
-            <div className="hooks__list">
-              {pkg.hooks.map((hook) => {
-                const eventInfo = isEventId(hook.event)
-                  ? EVENT_INFO[hook.event]
-                  : undefined
-                return (
-                  <div key={hook.id} className="hook">
-                    <div className="hook__head">
-                      <div className="hook__id">{hook.id}</div>
-                      {eventInfo && (
-                        <Link
-                          to="/event/$event"
-                          params={{ event: hook.event }}
-                          className="hook__event"
-                        >
-                          {hook.event}
-                        </Link>
-                      )}
-                      {hook.matcher && (
-                        <div className="hook__matcher">
-                          matcher: <code>{hook.matcher}</code>
-                        </div>
-                      )}
-                    </div>
-                    <div className="hook__body">
-                      <pre className="hook__command">{hook.command}</pre>
-                      {hook.agentOverrides && (
-                        <div className="hook__overrides">
-                          {Object.entries(hook.agentOverrides).map(
-                            ([agent, ov]) => (
-                              <span
-                                key={agent}
-                                className="hook__overrides-item"
-                              >
-                                <span className="hook__overrides-key">
-                                  {agent}:
-                                </span>{' '}
-                                {ov.matcher && (
-                                  <code>matcher={ov.matcher}</code>
-                                )}
-                                {ov.matcher && ov.command && ' · '}
-                                {ov.command && (
-                                  <code>command override</code>
-                                )}
-                              </span>
-                            ),
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
           </section>
 
           {/* ===== files ===== */}
