@@ -108,6 +108,8 @@
 .hero__aside {
   flex: 2;
   min-width: 0;
+  margin-top: 32px;
+  margin-bottom: 32px;
   padding-left: 32px;
   border-left: 1px solid var(--border-soft);
 }
