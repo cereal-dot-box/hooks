@@ -1,52 +1,49 @@
 /*
   agenthooks directory — theme tokens.
 
-  Aesthetic: warm-neutral paper (stone) with a single indigo accent. Inter
-  for UI/prose, JetBrains Mono for system / commands / identifiers. Flat,
-  hairline borders, no shadows. Light-only by design.
+  Aesthetic: operator's manual. Terminal-lineage typography (JetBrains Mono
+  for display + system text, Geist for body), pure black on white. No color,
+  no chrome — hierarchy comes from size, weight, and rules. Light-only.
 */
 
 :root {
   color-scheme: light;
 
-  /* surfaces — warm-neutral stone */
-  --bg: #fafaf9;
-  --surface: #ffffff;
-  --surface-2: #f5f5f4;
-  --border: #e7e5e4;
-  --border-soft: #efeae6;
+  /* surfaces — pure white paper */
+  --bg: #ffffff;
+  --surface: #f6f6f6;
+  --surface-2: #ececec;
+  --border: #d4d4d4;
+  --border-soft: #e6e6e6;
 
-  /* ink — warm near-black */
-  --ink: #1c1917;
-  --muted: #78716c;
+  /* ink — pure black + grayscale hierarchy */
+  --ink: #000000;
+  --ink-soft: #1a1a1a;
+  --muted: #6a6a6a;
+  --faint: #9a9a9a;
 
-  /* accent — indigo */
-  --accent: #4338ca;
-  --accent-light: #ede9fe;
-  --bar-bg: #f3f0ff;
+  /* accent IS black — weight and rules do the work */
+  --accent: #000000;
+  --accent-soft: #ececec;
 
-  /* secondary accents — used sparingly on detail pages */
-  --purple: #7c3aed;
-  --purple-light: #f3e8ff;
-
-  /* type — Inter for UI, JetBrains Mono for system text */
+  /* type — JetBrains Mono for system text, Geist for body */
   --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas,
     monospace;
-  --sans: 'Inter', apple-system, BlinkMacSystemFont, ui-sans-serif,
+  --sans: 'Geist', apple-system, BlinkMacSystemFont, ui-sans-serif,
     system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
 
-  /* shape — soft 6px corners */
-  --r-sm: 4px;
-  --r: 6px;
+  /* shape — small sharp corners */
+  --r-sm: 2px;
+  --r: 4px;
 
-  /* type scale — px-based, sized for the mock composition */
-  --t-xs: 14px;
-  --t-sm: 15px;
-  --t-base: 17px;
+  /* type scale — px-based */
+  --t-xs: 12px;
+  --t-sm: 13px;
+  --t-base: 16px;
   --t-md: 18px;
-  --t-lg: 20px;
-  --t-xl: 26px;
-  --t-2xl: 32px;
+  --t-lg: 22px;
+  --t-xl: 28px;
+  --t-display: 44px;
 
   /* leading */
   --leading-tight: 1.25;
@@ -55,7 +52,7 @@
   --leading-relaxed: 1.6;
 
   /* measure — content widths */
-  --content: 1200px;
+  --content: 1240px;
   --measure: 760px;
   --measure-prose: 760px;
   --detail: 960px;
@@ -70,4 +67,6 @@
   --space-7: 3rem;
   --space-8: 4rem;
   --space-9: 6rem;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }

@@ -23,7 +23,7 @@ body {
   color: var(--ink);
   font-family: var(--sans);
   font-size: var(--t-base);
-  line-height: var(--leading-relaxed);
+  line-height: 1.55;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -49,7 +49,7 @@ blockquote {
 a {
   color: var(--ink);
   text-decoration: none;
-  transition: color 120ms ease;
+  transition: color 120ms var(--ease);
 }
 
 a:hover {
@@ -78,13 +78,13 @@ button {
 }
 
 ::selection {
-  background: var(--accent-light);
-  color: var(--accent);
+  background: var(--accent);
+  color: var(--surface);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
 }
 
 * {
@@ -110,5 +110,14 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .row {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero__cursor {
+    animation: none;
   }
 }
