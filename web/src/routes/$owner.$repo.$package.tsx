@@ -1,7 +1,6 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 
 import { InstallCommand } from '#/components/install-command'
-import { LifecycleSpine } from '#/components/lifecycle-spine'
 import { Markdown } from '#/components/markdown'
 import { getPackage } from '#/data/server-fns'
 import { EVENT_INFO, isEventId } from '#/lib/events'
@@ -59,14 +58,11 @@ function PackageDetail() {
           </header>
 
           {/* ===== usage ===== */}
-          <InstallCommand command={installCommand} prompt={installPrompt} />
-
-          {/* ===== lifecycle ===== */}
-          <section className="lifecycle">
+          <section className="usage">
             <div className="section-head">
-              <span className="section-head__title">Lifecycle</span>
+              <span className="section-head__title">Usage</span>
             </div>
-            <LifecycleSpine events={events} variant="detail" />
+            <InstallCommand command={installCommand} prompt={installPrompt} />
           </section>
 
           {/* ===== hooks ===== */}
