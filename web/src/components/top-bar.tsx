@@ -8,9 +8,6 @@ export function TopBar() {
           @cerealbox/hooks
         </Link>
         <div className="topbar__nav">
-          <Link to="/" hash="most-installed">
-            index
-          </Link>
           <a href="https://github.com/jared-paul/agenthooks" target="_blank" rel="noopener noreferrer">github ↗</a>
           <a href="https://cereal.box" target="_blank" rel="noopener noreferrer">cereal.box ↗</a>
         </div>
