@@ -30,6 +30,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--ink);
+  white-space: nowrap;
 }
 
 .topbar__brand::before {
@@ -59,6 +60,7 @@
   color: var(--muted);
   text-decoration: none;
   transition: color 120ms var(--ease);
+  white-space: nowrap;
 }
 
 .topbar__nav a:hover {
