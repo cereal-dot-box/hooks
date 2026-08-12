@@ -15,7 +15,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'agenthooks — lifecycle hooks for AI coding agents' },
+      { title: '@cerealbox/hooks — lifecycle hooks for AI coding agents' },
       {
         name: 'description',
         content:

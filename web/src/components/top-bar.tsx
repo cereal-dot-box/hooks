@@ -5,7 +5,7 @@ export function TopBar() {
     <nav className="topbar" aria-label="primary">
       <div className="topbar__inner">
         <Link to="/" className="topbar__brand">
-          agenthooks
+          @cerealbox/hooks
         </Link>
         <div className="topbar__nav">
           <Link to="/" hash="most-installed">

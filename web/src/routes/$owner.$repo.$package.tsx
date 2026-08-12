@@ -29,7 +29,7 @@ function PackageDetail() {
   return (
     <main className="page">
       <nav className="breadcrumb" aria-label="breadcrumb">
-        <Link to="/">agenthooks</Link>
+        <Link to="/">@cerealbox/hooks</Link>
         <span className="breadcrumb__sep">/</span>
         <Link
           to="/$owner/$repo"
