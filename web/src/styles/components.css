@@ -93,7 +93,7 @@
 
 .hero {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   padding-bottom: 32px;
   margin-bottom: 32px;
   border-bottom: 1px solid var(--border);
