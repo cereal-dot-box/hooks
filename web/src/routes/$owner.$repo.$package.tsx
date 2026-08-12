@@ -72,7 +72,7 @@ function PackageDetail() {
               </div>
               <div className="files__panel">
                 <div className="files__header">
-                  <span className="files__path">$HOOK_DIR/</span>
+                  <span className="files__path">{pkg.name}/</span>
                   <a
                     className="files__source"
                     href={`https://github.com/${pkg.owner}/${pkg.repo}`}
