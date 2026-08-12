@@ -8,11 +8,8 @@ export function TopBar() {
           agenthooks
         </Link>
         <div className="topbar__nav">
-          <Link to="/event/$event" params={{ event: 'PreToolUse' }}>
-            events
-          </Link>
-          <Link to="/agent/$agent" params={{ agent: 'claude-code' }}>
-            agents
+          <Link to="/" hash="most-installed">
+            index
           </Link>
           <Link to="/search">search</Link>
           <a href="https://github.com/jared-paul/agenthooks">github ↗</a>

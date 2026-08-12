@@ -9,13 +9,11 @@ type Props = {
    * only the shell card renders.
    */
   prompt?: string
-  /** Show the section label and tab strip above the install card. */
-  showLabel?: boolean
 }
 
 type Mode = 'command' | 'prompt'
 
-export function InstallCommand({ command, prompt, showLabel = true }: Props) {
+export function InstallCommand({ command, prompt }: Props) {
   const [mode, setMode] = useState<Mode>('command')
   const [copied, setCopied] = useState(false)
 
@@ -34,40 +32,39 @@ export function InstallCommand({ command, prompt, showLabel = true }: Props) {
   const tabsVisible = Boolean(prompt)
 
   return (
-    <section className="usage">
-      {showLabel && (
-        <div className="section-head">
-          <span className="section-head__title">Usage</span>
-          {tabsVisible && (
-            <div
-              className="tabs tabs--usage"
-              role="tablist"
-              aria-label="usage mode"
-            >
-              <button
-                type="button"
-                className="tabs__tab"
-                aria-selected={mode === 'command'}
-                onClick={() => setMode('command')}
-                role="tab"
-              >
-                Command
-              </button>
-              <button
-                type="button"
-                className="tabs__tab"
-                aria-selected={mode === 'prompt'}
-                onClick={() => setMode('prompt')}
-                role="tab"
-              >
-                Prompt
-              </button>
-            </div>
-          )}
+    <>
+      {tabsVisible && (
+        <div
+          className="tabs tabs--usage"
+          role="tablist"
+          aria-label="usage mode"
+        >
+          <button
+            type="button"
+            className="tabs__tab"
+            aria-selected={mode === 'command'}
+            onClick={() => setMode('command')}
+            role="tab"
+          >
+            command
+          </button>
+          <button
+            type="button"
+            className="tabs__tab"
+            aria-selected={mode === 'prompt'}
+            onClick={() => setMode('prompt')}
+            role="tab"
+          >
+            prompt
+          </button>
         </div>
       )}
       <div className="hero__install">
-        <div className="install" data-mode="command" hidden={mode !== 'command'}>
+        <div
+          className="install"
+          data-mode="command"
+          hidden={tabsVisible && mode !== 'command'}
+        >
           <span className="install__prompt" aria-hidden="true">
             $
           </span>
@@ -87,7 +84,7 @@ export function InstallCommand({ command, prompt, showLabel = true }: Props) {
         )}
         <button
           type="button"
-          className={`btn-outline install__copy${tabsVisible ? '' : ' install__copy--strip'}`}
+          className="btn-outline install__copy"
           onClick={copy}
           data-copied={copied}
           aria-label={copied ? 'copied' : 'copy install command'}
@@ -95,6 +92,6 @@ export function InstallCommand({ command, prompt, showLabel = true }: Props) {
           {copied ? 'copied' : 'copy'}
         </button>
       </div>
-    </section>
+    </>
   )
 }
