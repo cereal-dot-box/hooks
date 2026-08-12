@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 type Props = {
-  /** Shell command, e.g. `npx agenthooks add owner/repo`. */
+  /** Shell command, e.g. `npx @cerealbox/hooks add owner/repo`. */
   command: string
   /**
    * Optional "prompt" variant — a natural-language instruction the user can

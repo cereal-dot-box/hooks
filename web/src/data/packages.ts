@@ -30,10 +30,10 @@ export const PACKAGES: Package[] = [
       '## Install',
       '',
       '```sh',
-      'npx agenthooks add github:jared-paul/session-banner',
+      'npx @cerealbox/hooks add github:jared-paul/session-banner',
       '```',
       '',
-      'Removes cleanly with `npx agenthooks remove session-banner`.',
+      'Removes cleanly with `npx @cerealbox/hooks remove session-banner`.',
     ].join('\n'),
     files: ['banner.mjs'],
     hooks: [

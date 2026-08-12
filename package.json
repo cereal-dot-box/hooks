@@ -1,5 +1,5 @@
 {
-  "name": "agenthooks",
+  "name": "@cerealbox/hooks",
   "version": "0.1.0",
   "description": "Install lifecycle hooks into Claude Code and Codex from a portable package. The hooks analog of npx skills.",
   "type": "module",

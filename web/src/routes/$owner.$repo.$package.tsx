@@ -23,8 +23,8 @@ export const Route = createFileRoute('/$owner/$repo/$package')({
 function PackageDetail() {
   const { pkg } = Route.useLoaderData()
   const events = Array.from(new Set(pkg.hooks.map((h) => h.event)))
-  const installCommand = `npx agenthooks add ${pkg.owner}/${pkg.name}`
-  const installPrompt = `Run \`npx agenthooks add -y ${pkg.owner}/${pkg.name}\` now. Hooks resolve at ~/.agents/hooks/<hookId>/.`
+  const installCommand = `npx @cerealbox/hooks add ${pkg.owner}/${pkg.name}`
+  const installPrompt = `Run \`npx @cerealbox/hooks add -y ${pkg.owner}/${pkg.name}\` now. Hooks resolve at ~/.agents/hooks/<hookId>/.`
 
   return (
     <main className="page">

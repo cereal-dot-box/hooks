@@ -123,14 +123,14 @@ function Home() {
         <div className="hero__main">
           {/* signature: install command as hero */}
           <p className="hero__cmd">
-            <span className="hero__cmd-prompt">$</span>npx agenthooks add
+            <span className="hero__cmd-prompt">$</span>npx @cerealbox/hooks add
             <br />
             <span className="hero__cmd-pkg">jared-paul/session-banner</span>
             <span className="hero__cursor" aria-hidden="true" />
           </p>
           <InstallCommand
-            command="npx agenthooks add jared-paul/session-banner"
-            prompt="Run `npx agenthooks add -y jared-paul/session-banner` now. Hooks resolve at ~/.agents/hooks/<hookId>/."
+            command="npx @cerealbox/hooks add jared-paul/session-banner"
+            prompt="Run `npx @cerealbox/hooks add -y jared-paul/session-banner` now. Hooks resolve at ~/.agents/hooks/<hookId>/."
           />
         </div>
         <div className="hero__aside">
