@@ -31,6 +31,12 @@ export type Package = {
   readmeMd: string
   /** Files the manifest copies into `$HOOK_DIR`. */
   files?: string[]
+  /**
+   * Source text per file, keyed by filename. Populated by the upload that
+   * happens during `@cerealbox/hooks add` — the directory stores whatever
+   * the installer pushed, so viewers don't have to round-trip to GitHub.
+   */
+  fileContents?: Record<string, string>
   hooks: Hook[]
   installCountAllTime: number
   installCountTrending: number
