@@ -116,7 +116,7 @@
   content: '';
   position: absolute;
   left: 0;
-  top: 32px;
+  top: 0;
   bottom: 32px;
   width: 1px;
   background: var(--border-soft);
