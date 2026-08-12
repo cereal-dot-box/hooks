@@ -179,48 +179,22 @@
 
       /* ============ hero: asymmetric 5/3 */
       .hero {
-        display: grid;
-        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        display: flex;
         gap: 64px;
-        align-items: start;
-        padding-bottom: 64px;
-        margin-bottom: 64px;
+        align-items: flex-start;
+        padding-bottom: 32px;
+        margin-bottom: 32px;
         border-bottom: 1px solid var(--border);
       }
 
       .hero__main {
+        flex: 3;
         min-width: 0;
       }
 
       .hero__aside {
+        flex: 2;
         min-width: 0;
-        border-left: 1px solid var(--border);
-        padding-left: 40px;
-        position: sticky;
-        top: 96px;
-      }
-
-      /* index marker — eyebrow */
-      .hero__index {
-        font-family: var(--mono);
-        font-size: var(--t-xs);
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        color: var(--muted);
-        margin-bottom: 28px;
-        display: flex;
-        align-items: baseline;
-        gap: 14px;
-      }
-      .hero__index-num {
-        color: var(--accent);
-      }
-      .hero__index-bar {
-        flex: 1;
-        height: 1px;
-        background: var(--border);
-        transform: translateY(-2px);
       }
 
       /* THE SIGNATURE — install command as hero */
@@ -231,7 +205,7 @@
         line-height: 1.15;
         letter-spacing: -0.04em;
         color: var(--ink);
-        margin-bottom: 28px;
+        margin-bottom: 48px;
         word-break: break-word;
       }
       .hero__cmd-prompt {
@@ -275,11 +249,17 @@
         color: var(--muted);
       }
       .hero__sub {
-        font-size: var(--t-md);
+        font-family: var(--sans);
+        font-size: var(--t-xl);
+        font-weight: 500;
         color: var(--muted);
-        max-width: 48ch;
-        line-height: 1.55;
-        margin-bottom: 32px;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        margin-bottom: 0;
+      }
+      .hero__sub em {
+        font-style: normal;
+        color: var(--muted);
       }
 
       /* install: command/prompt tabs + outline copy */
@@ -305,14 +285,13 @@
       }
       .install__command {
         font-family: var(--mono);
-        font-size: var(--t-sm);
+        font-size: 15px;
         padding: 14px 16px;
         color: var(--ink);
         white-space: nowrap;
         overflow-x: auto;
-      }
-      .install[data-mode='prompt'] {
-        flex: 1;
+        min-height: 48px;
+        line-height: 48px;
       }
       .install[data-mode='prompt'] .install__command {
         font-family: var(--sans);
@@ -320,13 +299,18 @@
         white-space: normal;
         word-break: break-word;
         overflow-x: visible;
+        min-height: 48px;
       }
       .hero__install {
-        display: inline-flex;
-        align-items: center;
+        display: flex;
+        width: 100%;
+        align-items: stretch;
         gap: 10px;
         flex-wrap: wrap;
         margin-bottom: 18px;
+      }
+      .install {
+        flex: 1;
       }
       .tabs {
         display: inline-flex;
@@ -336,6 +320,10 @@
         font-size: var(--t-xs);
         text-transform: uppercase;
         letter-spacing: 0.1em;
+      }
+      .tabs--usage {
+        display: flex;
+        width: 100%;
       }
       .tabs__tab {
         color: var(--faint);
@@ -557,6 +545,7 @@
         margin: 0;
       }
       .row {
+        position: relative;
         display: grid;
         grid-template-columns: 48px minmax(0, 1fr) auto auto;
         align-items: baseline;
@@ -604,8 +593,14 @@
         font-weight: 500;
         color: var(--ink);
         letter-spacing: -0.015em;
+        text-decoration: none;
       }
-      .row__name:hover {
+      .row__name::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+      .row:hover .row__name {
         color: var(--accent);
         text-decoration: underline;
         text-underline-offset: 4px;
@@ -861,7 +856,7 @@
           padding: 40px 20px 64px;
         }
         .hero {
-          grid-template-columns: 1fr;
+          flex-direction: column;
           gap: 48px;
           padding-bottom: 48px;
           margin-bottom: 48px;
@@ -939,17 +934,11 @@
 
     <main class="page">
       <!-- ============ HERO: asymmetric 5/3 ============ -->
-      <section class="hero">
+      <div class="hero">
         <div class="hero__main">
-          <p class="hero__index">
-            <span class="hero__index-num">index 001</span>
-            <span>the hook registry</span>
-            <span class="hero__index-bar"></span>
-          </p>
-
           <!-- THE SIGNATURE: install command as hero -->
           <p class="hero__cmd">
-            <span class="hero__cmd-prompt">$</span>npx agenthooks add<br />
+            <span class="hero__cmd-prompt">$</span>npx @cerealbox/hooks add<br />
             <span class="hero__cmd-pkg">jared-paul/session-banner</span><span
               class="hero__cursor"
               aria-hidden="true"
@@ -979,13 +968,13 @@
             <div class="install" data-mode="command">
               <span class="install__prompt">$</span>
               <code class="install__command"
-                >npx agenthooks add jared-paul/session-banner</code
+                >npx @cerealbox/hooks add jared-paul/session-banner</code
               >
             </div>
             <div class="install" data-mode="prompt" hidden>
               <span class="install__prompt">›</span>
               <code class="install__command"
-                >Run `npx agenthooks add -y jared-paul/session-banner` now.
+                >Run `npx @cerealbox/hooks add -y jared-paul/session-banner` now.
                 Hooks resolve at ~/.agents/hooks/&lt;hookId&gt;/.</code
               >
             </div>
@@ -995,17 +984,14 @@
           </div>
         </div>
 
-        <!-- hero right: headline + sub -->
-        <aside class="hero__aside">
-          <h1 class="hero__h1">
-            Lifecycle hooks <em>for AI coding agents.</em>
-          </h1>
+        <!-- hero right: sub as statement -->
+        <div class="hero__aside">
           <p class="hero__sub">
-            Installable shell scripts that fire at key moments in your agent's
-            run. One command to add, one to remove. No magic, just shell.
+            Hooks let you observe, control, and extend the agent loop using
+            custom scripts. Add one to enhance your agent workflow.
           </p>
-        </aside>
-      </section>
+        </div>
+      </div>
 
       <!-- ============ MOST INSTALLED ============ -->
       <section class="board" id="most-installed">
@@ -1095,29 +1081,29 @@
         ['SessionEnd', 'Session ends.'],
       ]
       const PACKAGES = [
-        { name: 'bash-audit', owner: 'octo-security', repo: 'bash-audit',
+        { name: 'bash-audit', owner: 'octo-security', repo: 'audit-hooks',
           events: ['PreToolUse'], allTime: 3921, trending: 88 },
-        { name: 'write-protector', owner: 'octo-security', repo: 'write-protector',
+        { name: 'write-protector', owner: 'octo-security', repo: 'audit-hooks',
           events: ['PreToolUse'], allTime: 2244, trending: 61 },
-        { name: 'session-banner', owner: 'jared-paul', repo: 'session-banner',
+        { name: 'session-banner', owner: 'jared-paul', repo: 'myhooks',
           events: ['SessionStart'], allTime: 1842, trending: 47 },
-        { name: 'git-auto-commit', owner: 'jared-paul', repo: 'git-auto-commit',
+        { name: 'git-auto-commit', owner: 'jared-paul', repo: 'myhooks',
           events: ['Stop'], allTime: 1487, trending: 33 },
-        { name: 'precommit-workflow', owner: 'jared-paul', repo: 'precommit-workflow',
+        { name: 'precommit-workflow', owner: 'jared-paul', repo: 'myhooks',
           events: ['PostToolUse', 'Stop'], allTime: 1102, trending: 28 },
-        { name: 'compact-summary', owner: 'jared-paul', repo: 'compact-summary',
+        { name: 'compact-summary', owner: 'jared-paul', repo: 'myhooks',
           events: ['PreCompact'], allTime: 829, trending: 22 },
-        { name: 'notification-bridge', owner: 'toolwatch', repo: 'notification-bridge',
+        { name: 'notification-bridge', owner: 'toolwatch', repo: 'observability',
           events: ['Notification'], allTime: 716, trending: 18 },
-        { name: 'prompt-echo', owner: 'hookbook', repo: 'prompt-echo',
+        { name: 'prompt-echo', owner: 'hookbook', repo: 'library',
           events: ['UserPromptSubmit'], allTime: 612, trending: 14 },
-        { name: 'tool-latency', owner: 'toolwatch', repo: 'tool-latency',
+        { name: 'tool-latency', owner: 'toolwatch', repo: 'observability',
           events: ['PostToolUse'], allTime: 402, trending: 9 },
-        { name: 'codex-startup-only', owner: 'octo-security', repo: 'codex-startup-only',
+        { name: 'codex-startup-only', owner: 'octo-security', repo: 'audit-hooks',
           events: ['SessionStart'], allTime: 318, trending: 11 },
-        { name: 'session-cleanup', owner: 'jared-paul', repo: 'session-cleanup',
+        { name: 'session-cleanup', owner: 'jared-paul', repo: 'myhooks',
           events: ['SessionEnd'], allTime: 247, trending: 7 },
-        { name: 'subagent-results', owner: 'hookbook', repo: 'subagent-results',
+        { name: 'subagent-results', owner: 'hookbook', repo: 'library',
           events: ['SubagentStop'], allTime: 195, trending: 6 },
       ]
 
@@ -1185,6 +1171,54 @@
           </li>`
       }
 
+      function repoRowHtml(r, rank) {
+        const events = [...r.events]
+        const hookLabel = r.hooks.length === 1 ? '1 hook' : `${r.hooks.length} hooks`
+        return `
+          <li class="row" style="animation-delay: ${Math.min(rank * 30, 400)}ms">
+            <span class="row__rank">${String(rank).padStart(2, '0')}</span>
+            <div class="row__main">
+              <div class="row__title">
+                <a class="row__name" href="#${r.owner}/${r.repo}">${r.owner}/${r.repo}</a>
+                ${events
+                  .map((e) => `<span class="row__event">${e}</span>`)
+                  .join('')}
+              </div>
+              <div class="row__repo">
+                <span>${hookLabel}</span>
+              </div>
+            </div>
+            <div class="row__num">
+              <span class="row__num-label">installs</span>${compact(r.allTime)}
+            </div>
+            <div class="row__delta">
+              <span class="row__num-label">7d</span>${sign(r.trending)}
+            </div>
+          </li>`
+      }
+
+      function aggregateByOwner(packages) {
+        const map = new Map()
+        for (const p of packages) {
+          if (!map.has(p.owner)) {
+            map.set(p.owner, {
+              owner: p.owner,
+              repo: p.repo,
+              hooks: [],
+              events: new Set(),
+              allTime: 0,
+              trending: 0,
+            })
+          }
+          const r = map.get(p.owner)
+          r.hooks.push(p.name)
+          p.events.forEach((e) => r.events.add(e))
+          r.allTime += p.allTime
+          r.trending += p.trending
+        }
+        return [...map.values()]
+      }
+
       function render() {
         const q = state.q.trim().toLowerCase()
         const filtered = PACKAGES.filter((p) => {
@@ -1198,19 +1232,25 @@
           return matchesQ && matchesHook
         })
 
-        const ordered = [...filtered].sort((a, b) => {
-          if (state.group === 'hook') {
+        let rows
+        if (state.group === 'repo') {
+          const owners = aggregateByOwner(filtered).sort(
+            (a, b) => b.allTime - a.allTime,
+          )
+          rows = owners.map((r, i) => repoRowHtml(r, i + 1))
+          emptyEl.hidden = owners.length !== 0
+        } else {
+          const ordered = [...filtered].sort((a, b) => {
             const ra = hookRank(primaryEvent(a))
             const rb = hookRank(primaryEvent(b))
             if (ra !== rb) return ra - rb
-          } else if (a.owner !== b.owner) {
-            return a.owner.localeCompare(b.owner)
-          }
-          return b.allTime - a.allTime
-        })
+            return b.allTime - a.allTime
+          })
+          rows = ordered.map((p, i) => rowHtml(p, i + 1))
+          emptyEl.hidden = filtered.length !== 0
+        }
 
-        listEl.innerHTML = ordered.map((p, i) => rowHtml(p, i + 1)).join('')
-        emptyEl.hidden = filtered.length !== 0
+        listEl.innerHTML = rows.join('')
       }
       render()
 
