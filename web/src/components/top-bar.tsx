@@ -13,6 +13,7 @@ export function TopBar() {
           </Link>
           <Link to="/search">search</Link>
           <a href="https://github.com/jared-paul/agenthooks">github ↗</a>
+          <a href="https://cereal.box">cereal.box ↗</a>
         </div>
       </div>
     </nav>
