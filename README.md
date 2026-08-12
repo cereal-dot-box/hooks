@@ -9,9 +9,9 @@
 `agenthooks` installs hook definitions (SessionStart, PreToolUse, Stop, ...) into your AI coding agent's config file by **merging into the existing JSON** — idempotently and reversibly. One command installs a hook *package* across every supported agent; one command removes it cleanly, even after you've hand-edited things.
 
 ```sh
-npx agenthooks add ./my-hooks          # merge into ~/.claude/settings.json + ~/.codex/hooks.json
-npx agenthooks list                    # show installed packages + drift status
-npx agenthooks remove my-hooks         # remove exactly what was added
+npx @cerealbox/hooks add ./my-hooks    # merge into ~/.claude/settings.json + ~/.codex/hooks.json
+npx @cerealbox/hooks list              # show installed packages + drift status
+npx @cerealbox/hooks remove my-hooks   # remove exactly what was added
 ```
 
 ## Hook package format
