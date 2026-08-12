@@ -67,14 +67,6 @@ function PackageDetail() {
             <InstallCommand command={installCommand} prompt={installPrompt} />
           </section>
 
-          {/* ===== readme ===== */}
-          <section className="readme">
-            <div className="section-head">
-              <span className="section-head__title">README.md</span>
-            </div>
-            <Markdown source={pkg.readmeMd} />
-          </section>
-
           {/* ===== files ===== */}
           {pkg.files && pkg.files.length > 0 && (
             <section className="files">
@@ -84,6 +76,14 @@ function PackageDetail() {
               <FilesPanel pkg={pkg} />
             </section>
           )}
+
+          {/* ===== readme ===== */}
+          <section className="readme">
+            <div className="section-head">
+              <span className="section-head__title">README.md</span>
+            </div>
+            <Markdown source={pkg.readmeMd} />
+          </section>
         </div>
 
         {/* ===== meta aside ===== */}
