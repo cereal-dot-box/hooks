@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SearchRouteImport } from './routes/search'
 import { Route as OwnerRepoRouteImport } from './routes/$owner.$repo'
 import { Route as AgentAgentRouteImport } from './routes/agent.$agent'
 import { Route as EventEventRouteImport } from './routes/event.$event'
@@ -20,11 +19,6 @@ import { Route as OwnerRepoPackageRouteImport } from './routes/$owner.$repo.$pac
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SearchRoute = SearchRouteImport.update({
-  id: '/search',
-  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OwnerRepoRoute = OwnerRepoRouteImport.update({
@@ -55,7 +49,6 @@ const OwnerRepoPackageRoute = OwnerRepoPackageRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/search': typeof SearchRoute
   '/$owner/$repo': typeof OwnerRepoRouteWithChildren
   '/agent/$agent': typeof AgentAgentRoute
   '/event/$event': typeof EventEventRoute
@@ -64,7 +57,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/search': typeof SearchRoute
   '/agent/$agent': typeof AgentAgentRoute
   '/event/$event': typeof EventEventRoute
   '/$owner/$repo/$package': typeof OwnerRepoPackageRoute
@@ -73,7 +65,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/search': typeof SearchRoute
   '/$owner/$repo': typeof OwnerRepoRouteWithChildren
   '/agent/$agent': typeof AgentAgentRoute
   '/event/$event': typeof EventEventRoute
@@ -84,7 +75,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/search'
     | '/$owner/$repo'
     | '/agent/$agent'
     | '/event/$event'
@@ -93,7 +83,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/search'
     | '/agent/$agent'
     | '/event/$event'
     | '/$owner/$repo/$package'
@@ -101,7 +90,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/search'
     | '/$owner/$repo'
     | '/agent/$agent'
     | '/event/$event'
@@ -111,7 +99,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SearchRoute: typeof SearchRoute
   OwnerRepoRoute: typeof OwnerRepoRouteWithChildren
   AgentAgentRoute: typeof AgentAgentRoute
   EventEventRoute: typeof EventEventRoute
@@ -124,13 +111,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$owner/$repo': {
@@ -187,7 +167,6 @@ const OwnerRepoRouteWithChildren = OwnerRepoRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SearchRoute: SearchRoute,
   OwnerRepoRoute: OwnerRepoRouteWithChildren,
   AgentAgentRoute: AgentAgentRoute,
   EventEventRoute: EventEventRoute,

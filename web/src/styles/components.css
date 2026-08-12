@@ -1185,7 +1185,7 @@
   border-radius: var(--r-sm);
 }
 
-/* ============================================================= listing headers (repo/event/agent/search) */
+/* ============================================================= listing headers (repo/event/agent) */
 
 .page__hero {
   margin-bottom: 32px;
@@ -1237,41 +1237,6 @@
   font-family: var(--mono);
   font-size: var(--t-sm);
   color: var(--faint);
-}
-
-/* ============================================================= search form (dedicated /search route) */
-
-.search-form {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 28px;
-}
-
-.search-form .search {
-  flex: 1 0 auto;
-}
-
-.search-form .search__input {
-  padding: 14px 18px 14px 0;
-}
-
-.search-form__submit {
-  font-family: var(--mono);
-  font-size: var(--t-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0 18px;
-  background: var(--ink);
-  color: var(--bg);
-  border: 1px solid var(--ink);
-  border-radius: var(--r);
-  cursor: pointer;
-  transition: background 120ms var(--ease);
-}
-
-.search-form__submit:hover {
-  background: var(--ink-soft);
-  border-color: var(--ink-soft);
 }
 
 /* ============================================================= skip link */
