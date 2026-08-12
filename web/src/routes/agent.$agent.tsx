@@ -28,7 +28,7 @@ function AgentRoute() {
   const { agent, info, packages } = Route.useLoaderData()
 
   return (
-    <main className="page page--narrow">
+    <main className="page">
       <Breadcrumb
         items={[
           { node: 'agents' },

@@ -26,7 +26,7 @@ function SearchRoute() {
   const { q, results } = Route.useLoaderData()
 
   return (
-    <main className="page page--narrow">
+    <main className="page">
       <Breadcrumb items={[{ node: 'search', current: true }]} />
       <header className="page__hero">
         <p className="eyebrow">search</p>

@@ -23,7 +23,7 @@ function EventRoute() {
   const { event, info, packages } = Route.useLoaderData()
 
   return (
-    <main className="page page--narrow">
+    <main className="page">
       <Breadcrumb
         items={[
           { node: 'events' },

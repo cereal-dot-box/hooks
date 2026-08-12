@@ -21,7 +21,7 @@ function RepoRoute() {
   const { owner, repo, packages } = Route.useLoaderData()
 
   return (
-    <main className="page page--narrow">
+    <main className="page">
       <Breadcrumb
         items={[{ node: `${owner}/${repo}`, current: true }]}
       />
