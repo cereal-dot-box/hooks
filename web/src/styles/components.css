@@ -518,7 +518,6 @@
   color: var(--ink);
   letter-spacing: -0.015em;
   text-decoration: none;
-  position: relative;
 }
 
 /* stretched-link: the name's ::after fills the row, so any click on the
