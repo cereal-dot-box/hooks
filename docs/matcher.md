@@ -33,15 +33,15 @@ Examples:
 
 It's a regex, so `|` is alternation, not glob-style.
 
-## How agenthooks uses it
+## How hooks uses it
 
-In the manifest you usually write one matcher, and agenthooks groups by it during merge. From `test/fixtures/example-pkg/hooks.json`:
+In the manifest you usually write one matcher, and hooks groups by it during merge. From `test/fixtures/example-pkg/hooks.json`:
 
 ```json
 { "id": "log-bash-calls", "event": "PreToolUse", "matcher": "Bash", "command": "..." }
 ```
 
-In the merge engine, `matcher` is the **grouping key**: agenthooks finds (or creates) the group whose `matcher === entry.matcher` and appends/updates the entry inside that group. Two installed hooks with `matcher: "Bash"` end up in the same group; different matchers end up in separate groups. That's the only way to keep user entries, our entries, and entries from other packages all coexisting in the same config file.
+In the merge engine, `matcher` is the **grouping key**: hooks finds (or creates) the group whose `matcher === entry.matcher` and appends/updates the entry inside that group. Two installed hooks with `matcher: "Bash"` end up in the same group; different matchers end up in separate groups. That's the only way to keep user entries, our entries, and entries from other packages all coexisting in the same config file.
 
 ## Per-agent overrides
 
@@ -67,5 +67,5 @@ The adapter applies that override during `adaptHook`, so the Claude Code config 
 
 - `matcher` is a regex filter — without it, the hook fires on every occurrence of the event.
 - What it matches depends on the event: tool name for `Pre/PostToolUse`, session source for `SessionStart`.
-- In agenthooks it's also the grouping key in the merge engine, so don't think of it as decorative — it determines which bucket the entry lands in.
+- In hooks it's also the grouping key in the merge engine, so don't think of it as decorative — it determines which bucket the entry lands in.
 - Use `agents.<name>.matcher` when the same hook needs different filtering per agent.

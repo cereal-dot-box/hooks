@@ -16,4 +16,4 @@ const tool = (() => {
     return "unknown";
   }
 })();
-console.log(`[agenthooks] bash call observed (tool=${tool})`);
+console.log(`[hooks] bash call observed (tool=${tool})`);

@@ -25,7 +25,7 @@ export type Scope = "global" | "project";
 
 export interface AgentResult {
   configPath: string;
-  entries: Array<{ agenthooksId: string; status: MutationStatus }>;
+  entries: Array<{ hooksId: string; status: MutationStatus }>;
 }
 
 export interface InstallOptions {
@@ -79,7 +79,7 @@ export function installPackage(source: string, opts: InstallOptions = {}): Insta
       const h = manifest.hooks[i]!;
       const p = prepared[i]!;
       installedEntries.push({
-        agenthooksId: `${manifest.name}:${h.id}`,
+        hooksId: `${manifest.name}:${h.id}`,
         packageName: manifest.name,
         hookId: h.id,
         event: h.event,

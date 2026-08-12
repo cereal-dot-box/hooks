@@ -39,7 +39,7 @@ export const claudeCodeAdapter: AgentAdapter = {
   adaptHook: (hook, ctx) => {
     const o = hook.agents?.["claude-code"];
     return {
-      agenthooksId: `${ctx.packageName}:${hook.id}`,
+      hooksId: `${ctx.packageName}:${hook.id}`,
       event: hook.event,
       matcher: o?.matcher ?? hook.matcher,
       command: templateCommand(o?.command ?? hook.command, ctx),
@@ -59,7 +59,7 @@ export const codexAdapter: AgentAdapter = {
   adaptHook: (hook, ctx) => {
     const o = hook.agents?.codex;
     return {
-      agenthooksId: `${ctx.packageName}:${hook.id}`,
+      hooksId: `${ctx.packageName}:${hook.id}`,
       event: hook.event,
       matcher: o?.matcher ?? hook.matcher,
       command: templateCommand(o?.command ?? hook.command, ctx),

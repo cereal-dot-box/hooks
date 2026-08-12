@@ -12,7 +12,7 @@
     />
     <style>
       /*
-        agenthooks hook-detail mock.
+        hooks hook-detail mock.
 
         Mirrors the frontpage mock: warm-neutral palette, indigo accent,
         Inter + JetBrains Mono, flat with hairline borders, no shadows.
@@ -780,12 +780,12 @@
   <body>
     <nav class="topbar" aria-label="primary">
       <div class="topbar__inner">
-        <a href="mock.html" class="topbar__brand">agenthooks</a>
+        <a href="mock.html" class="topbar__brand">hooks</a>
         <div class="topbar__nav">
           <a href="#">events</a>
           <a href="#">agents</a>
           <a href="#">search</a>
-          <a href="https://github.com/jared-paul/agenthooks">github ↗</a>
+          <a href="https://github.com/cereal-dot-box/hooks">github ↗</a>
         </div>
       </div>
     </nav>
@@ -793,7 +793,7 @@
     <main class="page">
       <!-- ============ BREADCRUMB ============ -->
       <nav class="breadcrumb" aria-label="breadcrumb">
-        <a href="mock.html">agenthooks</a>
+        <a href="mock.html">hooks</a>
         <span class="breadcrumb__sep">/</span>
         <a href="#">jared-paul</a>
         <span class="breadcrumb__sep">/</span>
@@ -826,11 +826,11 @@
           <div class="hero__install">
             <div class="install" data-mode="command">
               <span class="install__prompt">$</span>
-              <code class="install__command">npx agenthooks add jared-paul/session-banner</code>
+              <code class="install__command">npx hooks add jared-paul/session-banner</code>
             </div>
             <div class="install" data-mode="prompt" hidden>
               <span class="install__prompt">›</span>
-              <code class="install__command">Run `npx agenthooks add -y jared-paul/session-banner` now. Hooks resolve at ~/.agents/hooks/&lt;hookId&gt;/.</code>
+              <code class="install__command">Run `npx hooks add -y jared-paul/session-banner` now. Hooks resolve at ~/.agents/hooks/&lt;hookId&gt;/.</code>
             </div>
             <button class="btn-outline install__copy" type="button">copy</button>
           </div>
@@ -885,7 +885,7 @@
               your shell.
             </p>
             <h2>What it prints</h2>
-            <pre><code>[claude-code] ~/code/agenthooks  feature/directory-redesign  3m</code></pre>
+            <pre><code>[claude-code] ~/code/hooks  feature/directory-redesign  3m</code></pre>
             <p>
               The banner fires on <code>SessionStart</code>. Codex is pinned to
               the <code>startup|resume</code> matcher so re-running on
@@ -911,7 +911,7 @@
 }</code></pre>
             <h2>Uninstall</h2>
             <p>
-              Run <code>npx agenthooks remove session-banner</code>. The hook is
+              Run <code>npx hooks remove session-banner</code>. The hook is
               removed cleanly from both <code>~/.claude/settings.json</code> and
               <code>~/.codex/hooks.json</code>, and the script directory is
               garbage-collected.
@@ -955,7 +955,7 @@
     <footer class="footer">
       <div class="footer__inner">
         <span>an open registry · MIT · built in public</span>
-        <span><a href="https://github.com/jared-paul/agenthooks">github</a> · <a href="#publish">publish a hook →</a></span>
+        <span><a href="https://github.com/cereal-dot-box/hooks">github</a> · <a href="#publish">publish a hook →</a></span>
       </div>
     </footer>
 

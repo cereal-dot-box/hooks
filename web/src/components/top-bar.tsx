@@ -8,7 +8,7 @@ export function TopBar() {
           @cerealbox/hooks
         </Link>
         <div className="topbar__nav">
-          <a href="https://github.com/jared-paul/agenthooks" target="_blank" rel="noopener noreferrer">github ↗</a>
+          <a href="https://github.com/cereal-dot-box/hooks" target="_blank" rel="noopener noreferrer">github ↗</a>
           <a href="https://cereal.box" target="_blank" rel="noopener noreferrer">cereal.box ↗</a>
         </div>
       </div>

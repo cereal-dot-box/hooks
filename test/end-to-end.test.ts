@@ -12,7 +12,7 @@ let home: string;
 
 function run(args: string[], envHome: string): { stdout: string; stderr: string; status: number | null } {
   const r = spawnSync(process.execPath, [BIN, ...args], {
-    env: { ...process.env, HOME: envHome, AGENTHOOKS_HOME: join(envHome, ".agenthooks") },
+    env: { ...process.env, HOME: envHome, HOOKS_HOME: join(envHome, ".hooks") },
     cwd: REPO_ROOT,
     encoding: "utf8",
   });
@@ -116,7 +116,7 @@ describe("end-to-end", () => {
       const listOut = run(["list", "--json"], fresh);
       const listed = JSON.parse(listOut.stdout);
       const stopEntry = listed.packages[0].entries.find(
-        (e: any) => e.agenthooksId === "example-pkg:say-stopped" && e.agent === "claude-code",
+        (e: any) => e.hooksId === "example-pkg:say-stopped" && e.agent === "claude-code",
       );
       expect(stopEntry.status).toBe("drifted-modified");
 
@@ -134,7 +134,7 @@ describe("end-to-end", () => {
     const fresh = mkdtempSync(join(tmpdir(), "ah-e2e-rm-"));
     try {
       run(["add", FIXTURE, "--global", "--yes"], fresh);
-      const hooksRoot = join(fresh, ".agenthooks/hooks");
+      const hooksRoot = join(fresh, ".hooks/hooks");
       expect(existsSync(join(hooksRoot, "print-session-banner"))).toBe(true);
       expect(existsSync(join(hooksRoot, "log-bash-calls"))).toBe(true);
       expect(existsSync(join(hooksRoot, "say-stopped"))).toBe(true);
@@ -152,7 +152,7 @@ describe("end-to-end", () => {
       expect(existsSync(join(hooksRoot, "log-bash-calls"))).toBe(false);
       expect(existsSync(join(hooksRoot, "say-stopped"))).toBe(false);
 
-      const lock = readJSON(join(fresh, ".agenthooks/agenthooks.json")) as any;
+      const lock = readJSON(join(fresh, ".hooks/hooks.json")) as any;
       expect(lock.packages).toEqual({});
     } finally {
       rmSync(fresh, { recursive: true, force: true });

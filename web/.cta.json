@@ -1,5 +1,5 @@
 {
-  "projectName": "agenthooks-directory",
+  "projectName": "hooks-directory",
   "mode": "file-router",
   "typescript": true,
   "tailwind": false,

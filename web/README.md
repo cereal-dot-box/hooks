@@ -1,4 +1,4 @@
-# agenthooks.directory
+# hooks.directory
 
 The discovery surface for hook packages — browse, inspect, copy an install
 command. The hooks analog of `vercel-labs/skills`. v1 runs against mock

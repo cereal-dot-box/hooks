@@ -1,2 +1,2 @@
 // Example SessionStart hook script.
-console.log("[agenthooks] session started");
+console.log("[hooks] session started");

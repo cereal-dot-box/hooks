@@ -54,9 +54,9 @@ export function writeConfigAtomic(configPath: string, output: string): void {
   }
   mkdirSync(dirname(configPath), { recursive: true });
   if (existsSync(configPath)) {
-    copyFileSync(configPath, `${configPath}.agenthooks.bak`);
+    copyFileSync(configPath, `${configPath}.hooks.bak`);
   }
-  const tmp = `${configPath}.agenthooks-tmp-${process.pid}`;
+  const tmp = `${configPath}.hooks-tmp-${process.pid}`;
   writeFileSync(tmp, output, "utf8");
   renameSync(tmp, configPath);
 }

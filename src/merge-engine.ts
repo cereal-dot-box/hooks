@@ -15,7 +15,7 @@ import type {
 } from "./types.js";
 import { MANAGED_BY } from "./types.js";
 
-const ID_KEY = "agenthooksId";
+const ID_KEY = "hooksId";
 const MARKER_KEY = "managedBy";
 
 type Obj = Record<string, unknown>;
@@ -34,7 +34,7 @@ function buildEntry(entry: PreparedEntry, mark: boolean): Obj {
   for (const k of Object.keys(entry.extras).sort()) obj[k] = entry.extras[k];
   if (mark) {
     obj[MARKER_KEY] = MANAGED_BY;
-    obj[ID_KEY] = entry.agenthooksId;
+    obj[ID_KEY] = entry.hooksId;
   }
   return obj;
 }
@@ -60,7 +60,7 @@ interface Found {
   entry: Obj;
 }
 
-/** Find an existing entry by agenthooksId, searching all groups under an event. */
+/** Find an existing entry by hooksId, searching all groups under an event. */
 function findById(groups: unknown[], id: string): Found | null {
   for (const g of groups) {
     const go = asObject(g);
@@ -92,12 +92,12 @@ function findByPayload(groups: unknown[], entry: PreparedEntry): Found | null {
 }
 
 function targetKey(t: RemoveTarget): string {
-  if ("agenthooksId" in t) return t.agenthooksId;
+  if ("hooksId" in t) return t.hooksId;
   return `${t.event}|${t.matcher ?? ""}|${t.command}`;
 }
 
 function entryMatchesTarget(entry: Obj, event: string, groupMatcher: unknown, t: RemoveTarget): boolean {
-  if ("agenthooksId" in t) return entry[ID_KEY] === t.agenthooksId;
+  if ("hooksId" in t) return entry[ID_KEY] === t.hooksId;
   return (
     t.event === event &&
     (t.matcher ?? undefined) === (groupMatcher ?? undefined) &&
@@ -139,17 +139,17 @@ export function installHooksIntoObject(
     }
 
     // Find existing entry (by id when marking, by payload otherwise).
-    const found = mark ? findById(groups, entry.agenthooksId) : findByPayload(groups, entry);
+    const found = mark ? findById(groups, entry.hooksId) : findByPayload(groups, entry);
 
     if (found) {
       if (payloadEqual(found.entry, entry)) {
-        results.push({ agenthooksId: entry.agenthooksId, status: "already-present" });
+        results.push({ hooksId: entry.hooksId, status: "already-present" });
         continue;
       }
       const idx = found.hooks.indexOf(found.entry);
       found.hooks[idx] = buildEntry(entry, mark);
       changed = true;
-      results.push({ agenthooksId: entry.agenthooksId, status: "updated" });
+      results.push({ hooksId: entry.hooksId, status: "updated" });
       continue;
     }
 
@@ -172,7 +172,7 @@ export function installHooksIntoObject(
     }
     groupHooks.push(buildEntry(entry, mark));
     changed = true;
-    results.push({ agenthooksId: entry.agenthooksId, status: "added" });
+    results.push({ hooksId: entry.hooksId, status: "added" });
   }
 
   return { changed, results };

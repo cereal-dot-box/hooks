@@ -4,7 +4,7 @@
   "description": "Install lifecycle hooks into Claude Code and Codex from a portable package. The hooks analog of npx skills.",
   "type": "module",
   "bin": {
-    "agenthooks": "./bin/cli.mjs"
+    "hooks": "./bin/cli.mjs"
   },
   "files": [
     "bin",
@@ -45,9 +45,9 @@
     "lifecycle"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/jared-paul/agenthooks",
+  "homepage": "https://github.com/cereal-dot-box/hooks",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jared-paul/agenthooks.git"
+    "url": "git+https://github.com/cereal-dot-box/hooks.git"
   }
 }

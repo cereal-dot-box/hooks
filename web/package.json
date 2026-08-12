@@ -1,5 +1,5 @@
 {
-  "name": "agenthooks-directory",
+  "name": "hooks-directory",
   "private": true,
   "type": "module",
   "imports": {

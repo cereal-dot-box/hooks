@@ -33,7 +33,7 @@ export function printInstallResult(o: InstallOutcome, json: boolean): void {
     const r = res as AgentResult;
     console.log(`  ${pc.magenta(agent)} ${pc.dim("→")} ${pc.dim(r.configPath)}`);
     for (const e of r.entries) {
-      console.log(`    ${colorStatus(e.status.padEnd(16))} ${e.agenthooksId}`);
+      console.log(`    ${colorStatus(e.status.padEnd(16))} ${e.hooksId}`);
     }
   }
 }
@@ -51,7 +51,7 @@ export function printList(o: ListOutcome, json: boolean): void {
     console.log(`${pc.bold(pc.cyan(pkg.name))} ${pc.dim(`from ${pkg.source}`)}`);
     for (const e of pkg.entries as ListedEntry[]) {
       console.log(
-        `  ${colorStatus(e.status.padEnd(18))} ${pc.magenta(e.agent)}  ${e.event}  ${pc.dim(e.agenthooksId)}`,
+        `  ${colorStatus(e.status.padEnd(18))} ${pc.magenta(e.agent)}  ${e.event}  ${pc.dim(e.hooksId)}`,
       );
     }
   }
@@ -73,10 +73,10 @@ export function printRemove(o: RemoveOutcome, json: boolean): void {
 }
 
 export function printHelp(): void {
-  console.log(`agenthooks — install lifecycle hooks into Claude Code + Codex
+  console.log(`hooks — install lifecycle hooks into Claude Code + Codex
 
 ${pc.bold("Usage")}
-  agenthooks <command> [options]
+  hooks <command> [options]
 
 ${pc.bold("Commands")}
   add <source>        Install hooks from a local package directory
@@ -87,7 +87,7 @@ ${pc.bold("Options")}
   -g, --global        Target ~/.claude + ~/.codex (default)
   -p, --project       Target ./.claude + ./.codex (committable)
   --agent <name>      Restrict to a specific agent (repeatable)
-  --no-marker         Skip managedBy/agenthooksId fields
+  --no-marker         Skip managedBy/hooksId fields
   --force             Suppress drift warnings
   -y, --yes           Non-interactive (skip confirm prompts)
   --json              Machine-readable output
@@ -97,7 +97,7 @@ ${pc.bold("Options")}
 }
 
 export function printVersion(version: string): void {
-  console.log(`agenthooks ${version}`);
+  console.log(`hooks ${version}`);
 }
 
 export function warn(message: string): void {
@@ -105,6 +105,6 @@ export function warn(message: string): void {
 }
 
 export function errorExit(message: string): never {
-  console.error(pc.red(`agenthooks: ${message}`));
+  console.error(pc.red(`hooks: ${message}`));
   process.exit(1);
 }

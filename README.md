@@ -1,4 +1,4 @@
-# agenthooks
+# hooks
 
 > Install lifecycle hooks into Claude Code and Codex from a portable package. The hooks analog of [`npx skills`](https://github.com/vercel-labs/skills).
 
@@ -6,7 +6,7 @@
 
 ## What it does
 
-`agenthooks` installs hook definitions (SessionStart, PreToolUse, Stop, ...) into your AI coding agent's config file by **merging into the existing JSON** — idempotently and reversibly. One command installs a hook *package* across every supported agent; one command removes it cleanly, even after you've hand-edited things.
+`hooks` installs hook definitions (SessionStart, PreToolUse, Stop, ...) into your AI coding agent's config file by **merging into the existing JSON** — idempotently and reversibly. One command installs a hook *package* across every supported agent; one command removes it cleanly, even after you've hand-edited things.
 
 ```sh
 npx @cerealbox/hooks add ./my-hooks    # merge into ~/.claude/settings.json + ~/.codex/hooks.json
@@ -52,7 +52,7 @@ A hook package is a directory with a `hooks.json` manifest:
 
 ## How it works
 
-Each installed entry is written with two trailing marker fields — `managedBy: "agenthooks"` and `agenthooksId: "<package>:<hookId>"` — so ownership is O(1) and removal is deterministic even if you later edit the command or matcher. A sidecar lock at `~/.agents/agenthooks.json` is the book of record and powers `list` drift detection and script garbage-collection. `remove` filters by `agenthooksId` and cleans up empty groups, so your config returns to its prior state. Each hook's scripts live at `~/.agents/hooks/<hookId>/`, GC'd on remove.
+Each installed entry is written with two trailing marker fields — `managedBy: "hooks"` and `hooksId: "<package>:<hookId>"` — so ownership is O(1) and removal is deterministic even if you later edit the command or matcher. A sidecar lock at `~/.agents/hooks.json` is the book of record and powers `list` drift detection and script garbage-collection. `remove` filters by `hooksId` and cleans up empty groups, so your config returns to its prior state. Each hook's scripts live at `~/.agents/hooks/<hookId>/`, GC'd on remove.
 
 Your existing formatting (indent size, trailing newline, key order, unrelated keys like `permissions` or `env`) is preserved on every write. Unparseable config files are never overwritten.
 

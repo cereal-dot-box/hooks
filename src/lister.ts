@@ -4,7 +4,7 @@ import { scriptsDirFor } from "./scripts-dir.js";
 import type { AgentName } from "./types.js";
 
 export interface ListedEntry {
-  agenthooksId: string;
+  hooksId: string;
   event: string;
   agent: AgentName;
   status: "present" | "drifted-modified" | "drifted-missing";
@@ -24,7 +24,7 @@ export interface ListOutcome {
   packages: ListedPackage[];
 }
 
-/** Read a config and return agenthooksId -> command for every marked entry. */
+/** Read a config and return hooksId -> command for every marked entry. */
 function readMarkedCommands(configPath: string): Map<string, string> {
   const out = new Map<string, string>();
   if (!existsSync(configPath)) return out;
@@ -45,7 +45,7 @@ function readMarkedCommands(configPath: string): Map<string, string> {
       for (const e of gh) {
         if (!e || typeof e !== "object") continue;
         const eo = e as Record<string, unknown>;
-        const id = eo.agenthooksId;
+        const id = eo.hooksId;
         if (typeof id === "string" && typeof eo.command === "string") {
           out.set(id, eo.command);
         }
@@ -69,12 +69,12 @@ export function listInstalled(): ListOutcome {
 
     const entries: ListedEntry[] = pkg.entries.map((e) => {
       const live = liveByAgent.get(e.agent);
-      const liveCmd = live?.get(e.agenthooksId);
+      const liveCmd = live?.get(e.hooksId);
       let status: ListedEntry["status"];
       if (liveCmd === undefined) status = "drifted-missing";
       else if (liveCmd !== e.command) status = "drifted-modified";
       else status = "present";
-      return { agenthooksId: e.agenthooksId, event: e.event, agent: e.agent, status };
+      return { hooksId: e.hooksId, event: e.event, agent: e.agent, status };
     });
 
     packages.push({

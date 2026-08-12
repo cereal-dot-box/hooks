@@ -45,7 +45,7 @@ export function removePackage(name: string, opts: RemoveOptions = {}): RemoveOut
 
     const entriesForAgent = pkg.entries.filter((e) => e.agent === agentName);
     const targets: RemoveTarget[] = pkg.mark
-      ? entriesForAgent.map((e) => ({ agenthooksId: e.agenthooksId }))
+      ? entriesForAgent.map((e) => ({ hooksId: e.hooksId }))
       : entriesForAgent.map((e) => ({ event: e.event, matcher: e.matcher, command: e.command }));
 
     const res = removeHooksFromConfig(configPath, targets);

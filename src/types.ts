@@ -11,12 +11,12 @@ export type HookEvent =
 
 export type AgentName = "claude-code" | "codex";
 
-export const MANAGED_BY = "agenthooks";
+export const MANAGED_BY = "hooks";
 
 /** A hook resolved for a specific agent, ready to merge into its config. */
 export interface PreparedEntry {
   /** "<packageName>:<hookId>" — stable removal key. */
-  agenthooksId: string;
+  hooksId: string;
   event: HookEvent;
   /** Group-level matcher. undefined means the catch-all group. */
   matcher?: string;
@@ -28,7 +28,7 @@ export interface PreparedEntry {
 export type MutationStatus = "added" | "already-present" | "updated";
 
 export interface EntryMutation {
-  agenthooksId: string;
+  hooksId: string;
   status: MutationStatus;
 }
 
@@ -44,7 +44,7 @@ export interface MutationResult {
 
 /** A target for removal — discriminated by which identification mode we're in. */
 export type RemoveTarget =
-  | { agenthooksId: string }
+  | { hooksId: string }
   | { event: HookEvent; matcher?: string; command: string };
 
 export interface RemoveResult extends MutationResult {
@@ -80,7 +80,7 @@ export interface HookManifest {
 // --- Lock files ---
 
 export interface InstalledEntry {
-  agenthooksId: string;
+  hooksId: string;
   packageName: string;
   hookId: string;
   event: HookEvent;

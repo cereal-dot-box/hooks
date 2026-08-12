@@ -32,8 +32,8 @@ describe("claudeCodeAdapter.adaptHook", () => {
     );
   });
 
-  it("sets agenthooksId as packageName:hookId", () => {
-    expect(claudeCodeAdapter.adaptHook(hook(), ctx).agenthooksId).toBe("pkg:h1");
+  it("sets hooksId as packageName:hookId", () => {
+    expect(claudeCodeAdapter.adaptHook(hook(), ctx).hooksId).toBe("pkg:h1");
   });
 
   it("applies agents.claude-code overrides", () => {

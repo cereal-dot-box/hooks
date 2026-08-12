@@ -22,7 +22,7 @@ function entry(
   extras: Record<string, unknown> = {},
   matcher?: string,
 ): PreparedEntry {
-  return { agenthooksId: id, event, command, extras, matcher };
+  return { hooksId: id, event, command, extras, matcher };
 }
 
 const read = (file: string): unknown => JSON.parse(readFileSync(p(file), "utf8"));
@@ -34,13 +34,13 @@ describe("installHooksIntoObject — pure core", () => {
       entry("pkg:hook1", "SessionStart", "echo hi"),
     ]);
     expect(changed).toBe(true);
-    expect(results).toEqual([{ agenthooksId: "pkg:hook1", status: "added" }]);
+    expect(results).toEqual([{ hooksId: "pkg:hook1", status: "added" }]);
     expect(root).toEqual({
       hooks: {
         SessionStart: [
           {
             hooks: [
-              { type: "command", command: "echo hi", managedBy: "agenthooks", agenthooksId: "pkg:hook1" },
+              { type: "command", command: "echo hi", managedBy: "hooks", hooksId: "pkg:hook1" },
             ],
           },
         ],
@@ -57,7 +57,7 @@ describe("installHooksIntoObject — pure core", () => {
     const group = (root.hooks as any).Stop[0];
     expect(group.hooks).toEqual([
       { type: "command", command: "user-cmd" },
-      { type: "command", command: "our-cmd", managedBy: "agenthooks", agenthooksId: "pkg:s1" },
+      { type: "command", command: "our-cmd", managedBy: "hooks", hooksId: "pkg:s1" },
     ]);
     expect(results[0]?.status).toBe("added");
   });
@@ -74,7 +74,7 @@ describe("installHooksIntoObject — pure core", () => {
     expect(groups).toHaveLength(2);
     const readGroup = groups.find((g: { matcher?: string }) => g.matcher === "Read");
     const bashGroup = groups.find((g: { matcher?: string }) => g.matcher === "Bash");
-    expect(readGroup.hooks[0].agenthooksId).toBe("pkg:r");
+    expect(readGroup.hooks[0].hooksId).toBe("pkg:r");
     expect(bashGroup.hooks).toEqual([{ type: "command", command: "user-bash" }]);
   });
 });
@@ -103,8 +103,8 @@ describe("installHooksIntoConfig — file I/O", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const hook = (read("settings.json") as any).hooks.SessionStart[0].hooks[0];
     expect(hook.command).toBe("echo new");
-    expect(hook.agenthooksId).toBe("pkg:s");
-    expect(hook.managedBy).toBe("agenthooks");
+    expect(hook.hooksId).toBe("pkg:s");
+    expect(hook.managedBy).toBe("hooks");
   });
 
   it("supports no-marker install and payload-based removal", () => {
@@ -177,31 +177,31 @@ describe("installHooksIntoConfig — file I/O", () => {
     const cfg = p("settings.json");
     writeFileSync(cfg, '{\n  "old": true\n}\n');
     installHooksIntoConfig(cfg, [entry("pkg:s", "Stop", "echo")]);
-    expect(readFileSync(`${cfg}.agenthooks.bak`, "utf8")).toBe('{\n  "old": true\n}\n');
+    expect(readFileSync(`${cfg}.hooks.bak`, "utf8")).toBe('{\n  "old": true\n}\n');
   });
 });
 
 describe("removeHooksFromConfig", () => {
-  it("removes only entries matching agenthooksId, leaving others", () => {
+  it("removes only entries matching hooksId, leaving others", () => {
     const cfg = p("settings.json");
     writeFileSync(cfg, "{}\n");
     installHooksIntoConfig(cfg, [
       entry("pkg:a", "SessionStart", "echo a"),
       entry("pkg:b", "SessionStart", "echo b"),
     ]);
-    const r = removeHooksFromConfig(cfg, [{ agenthooksId: "pkg:a" }]);
+    const r = removeHooksFromConfig(cfg, [{ hooksId: "pkg:a" }]);
     expect(r.removed).toEqual(["pkg:a"]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const hooks = (read("settings.json") as any).hooks.SessionStart[0].hooks;
     expect(hooks).toHaveLength(1);
-    expect(hooks[0].agenthooksId).toBe("pkg:b");
+    expect(hooks[0].hooksId).toBe("pkg:b");
   });
 
   it("cleans up empty groups, events, and the top-level hooks key", () => {
     const cfg = p("settings.json");
     writeFileSync(cfg, '{\n  "permissions": {}\n}\n');
     installHooksIntoConfig(cfg, [entry("pkg:s", "SessionStart", "echo hi")]);
-    removeHooksFromConfig(cfg, [{ agenthooksId: "pkg:s" }]);
+    removeHooksFromConfig(cfg, [{ hooksId: "pkg:s" }]);
     expect(read("settings.json")).toEqual({ permissions: {} });
   });
 
@@ -209,7 +209,7 @@ describe("removeHooksFromConfig", () => {
     const cfg = p("settings.json");
     writeFileSync(cfg, "{}\n");
     installHooksIntoConfig(cfg, [entry("pkg:a", "Stop", "echo a")]);
-    const r = removeHooksFromConfig(cfg, [{ agenthooksId: "pkg:missing" }]);
+    const r = removeHooksFromConfig(cfg, [{ hooksId: "pkg:missing" }]);
     expect(r.removed).toEqual([]);
     expect(r.notFound).toEqual(["pkg:missing"]);
   });
