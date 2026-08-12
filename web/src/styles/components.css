@@ -93,7 +93,6 @@
 
 .hero {
   display: flex;
-  gap: 64px;
   align-items: flex-start;
   padding-bottom: 32px;
   margin-bottom: 32px;
@@ -103,11 +102,14 @@
 .hero__main {
   flex: 3;
   min-width: 0;
+  padding-right: 32px;
 }
 
 .hero__aside {
   flex: 2;
   min-width: 0;
+  padding-left: 32px;
+  border-left: 1px solid var(--border-soft);
 }
 
 /* the signature: install command as hero, with blinking cursor */
@@ -1307,9 +1309,20 @@
 
   .hero {
     flex-direction: column;
-    gap: 48px;
+    gap: 0;
     padding-bottom: 48px;
     margin-bottom: 48px;
+  }
+
+  .hero__main {
+    padding-right: 0;
+  }
+
+  .hero__aside {
+    padding-left: 0;
+    padding-top: 48px;
+    border-left: none;
+    border-top: 1px solid var(--border-soft);
   }
 
   .hero__cmd {
