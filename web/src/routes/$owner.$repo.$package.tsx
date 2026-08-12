@@ -70,16 +70,52 @@ function PackageDetail() {
               <div className="section-head">
                 <span className="section-head__title">Files</span>
               </div>
-              <ul className="files__list">
-                {pkg.files.map((f) => (
-                  <li key={f} className="files__item">
-                    <span className="files__icon" aria-hidden="true">
-                      ▸
-                    </span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <div className="files__panel">
+                <div className="files__header">
+                  <span className="files__path">$HOOK_DIR/</span>
+                  <a
+                    className="files__source"
+                    href={`https://github.com/${pkg.owner}/${pkg.repo}`}
+                  >
+                    view source ↗
+                  </a>
+                </div>
+                <ul className="files__list">
+                  {pkg.files.map((f) => {
+                    const dot = f.lastIndexOf('.')
+                    const ext = dot > 0 ? f.slice(dot + 1) : ''
+                    return (
+                      <li key={f} className="files__item">
+                        <a
+                          className="files__link"
+                          href={`https://github.com/${pkg.owner}/${pkg.repo}/blob/main/${f}`}
+                        >
+                          <svg
+                            className="files__icon"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.25"
+                            strokeLinejoin="round"
+                            strokeLinecap="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M3.5 1.5h4.5l3 3v8a0.5 0.5 0 0 1-0.5 0.5h-7A0.5 0.5 0 0 1 3 12.5V2A0.5 0.5 0 0 1 3.5 1.5z" />
+                            <path d="M8 1.5V4.5H11" />
+                          </svg>
+                          <span className="files__name">{f}</span>
+                          {ext && <span className="files__ext">{ext}</span>}
+                          <span className="files__arrow" aria-hidden="true">
+                            →
+                          </span>
+                        </a>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
             </section>
           )}
 
