@@ -1,4 +1,4 @@
-const DEFAULT_DIRECTORY_URL = "https://hooks.directory";
+const DEFAULT_DIRECTORY_URL = "https://hooks.cereal.box";
 
 /**
  * Fire-and-forget install telemetry. Never blocks, never logs, never throws —
