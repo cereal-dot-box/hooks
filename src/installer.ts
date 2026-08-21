@@ -11,8 +11,10 @@ import {
 } from "./project-lock.js";
 import { loadManifest } from "./manifest.js";
 import { installHooksIntoConfig } from "./merge-engine.js";
-import { parseSource } from "./source-parser.js";
+import { parseSource, type ResolvedSource } from "./source-parser.js";
 import { copyScripts } from "./scripts-dir.js";
+import { fetchGithubPackage } from "./github-source.js";
+import { rmSync } from "node:fs";
 import type {
   AgentName,
   InstalledEntry,
@@ -43,12 +45,37 @@ export interface InstallOutcome {
   scriptsDirs: string[];
 }
 
-export function installPackage(source: string, opts: InstallOptions = {}): InstallOutcome {
+export async function installPackage(source: string, opts: InstallOptions = {}): Promise<InstallOutcome> {
   const scope = opts.scope ?? "global";
   const mark = opts.mark !== false;
   const resolved = parseSource(source, opts.cwd);
-  const loaded = loadManifest(resolved.pkgDir);
-  const { manifest, manifestHash, pkgDir } = loaded;
+  const staged = await stageIfRemote(resolved);
+  try {
+    return installFromDirectory(source, resolved, staged.pkgDir, staged.sourceUrl, opts, scope, mark);
+  } finally {
+    if (staged.temp) rmSync(staged.temp, { recursive: true, force: true });
+  }
+}
+
+async function stageIfRemote(
+  resolved: ResolvedSource,
+): Promise<{ pkgDir: string; sourceUrl?: string; temp?: string }> {
+  if (resolved.sourceType === "local") return { pkgDir: resolved.pkgDir };
+  const staged = await fetchGithubPackage(resolved);
+  return { pkgDir: staged.pkgDir, sourceUrl: staged.sourceUrl, temp: staged.pkgDir };
+}
+
+function installFromDirectory(
+  source: string,
+  resolved: ResolvedSource,
+  pkgDir: string,
+  sourceUrl: string | undefined,
+  opts: InstallOptions,
+  scope: Scope,
+  mark: boolean,
+): InstallOutcome {
+  const loaded = loadManifest(pkgDir);
+  const { manifest, manifestHash } = loaded;
 
   const agents = resolveAgents(opts.agents);
 
@@ -96,8 +123,8 @@ export function installPackage(source: string, opts: InstallOptions = {}): Insta
     name: manifest.name,
     source,
     sourceType: resolved.sourceType,
-    sourceUrl: resolved.sourceUrl,
-    ref: resolved.ref,
+    sourceUrl,
+    ref: resolved.sourceType === "github" ? resolved.ref : undefined,
     resolvedAt: now,
     manifestHash,
     agents,
@@ -114,7 +141,7 @@ export function installPackage(source: string, opts: InstallOptions = {}): Insta
       name: manifest.name,
       source,
       sourceType: resolved.sourceType,
-      ref: resolved.ref,
+      ref: resolved.sourceType === "github" ? resolved.ref : undefined,
       manifestHash,
       agents,
       hooks: manifest.hooks.map((h) => ({ id: h.id, event: h.event })),

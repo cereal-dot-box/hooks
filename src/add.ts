@@ -6,7 +6,7 @@ import { reportInstall } from "./report.js";
 export async function runAdd(args: string[]): Promise<void> {
   const { flags, positional } = parseGlobalFlags(args);
   const source = positional[0];
-  if (!source) throw new Error("add: missing <source> (a local package directory)");
+  if (!source) throw new Error("add: missing <source> (a local dir, or github:owner/repo[@ref][#path])");
 
   if (!flags.yes) {
     const ok = await confirmInstall(`Install hooks from ${source} into ${flags.scope} config?`);
@@ -16,7 +16,7 @@ export async function runAdd(args: string[]): Promise<void> {
     }
   }
 
-  const outcome = installPackage(source, {
+  const outcome = await installPackage(source, {
     scope: flags.scope,
     agents: flags.agents.length > 0 ? flags.agents : undefined,
     mark: flags.mark,

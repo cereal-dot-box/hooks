@@ -79,7 +79,7 @@ ${pc.bold("Usage")}
   hooks <command> [options]
 
 ${pc.bold("Commands")}
-  add <source>        Install hooks from a local package directory
+  add <source>        Install from a local dir or github:owner/repo[@ref][#path]
   list                Show installed packages and drift status
   remove <name>       Remove a package and its hooks
 
