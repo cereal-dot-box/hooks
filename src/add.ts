@@ -1,6 +1,7 @@
 import { confirmInstall, printInstallResult, warn } from "./ui.js";
 import { parseGlobalFlags } from "./flags.js";
 import { installPackage } from "./installer.js";
+import { reportInstall } from "./report.js";
 
 export async function runAdd(args: string[]): Promise<void> {
   const { flags, positional } = parseGlobalFlags(args);
@@ -23,6 +24,8 @@ export async function runAdd(args: string[]): Promise<void> {
   });
 
   printInstallResult(outcome, flags.json);
+
+  reportInstall(outcome.packageName);
 
   const driftCount = Object.values(outcome.results).filter((r) =>
     r ? r.entries.some((e) => e.status === "updated") : false,
