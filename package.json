@@ -1,6 +1,6 @@
 {
   "name": "@cerealbox/hooks",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Install lifecycle hooks into Claude Code and Codex from a portable package. The hooks analog of npx skills.",
   "type": "module",
   "bin": {

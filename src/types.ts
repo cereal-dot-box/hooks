@@ -92,8 +92,10 @@ export interface InstalledEntry {
 export interface PackageInstall {
   name: string;
   source: string;
-  sourceType: "local" | "github" | "npm";
+  sourceType: "local" | "github" | "git" | "npm";
   sourceUrl?: string;
+  /** Git identity for remote installs; used by remove telemetry. */
+  git?: { host: string; owner: string; repo: string; path?: string; ref?: string };
   ref?: string;
   resolvedAt: string;
   manifestHash: string;

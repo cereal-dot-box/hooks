@@ -8,6 +8,9 @@ export interface GlobalFlags {
   agents: AgentName[];
   cwd?: string;
   json: boolean;
+  /** `--hook <id|name>`: install one hook, or the package with that name. */
+  hook?: string;
+  list: boolean;
 }
 
 export interface ParsedArgs {
@@ -28,6 +31,7 @@ export function parseGlobalFlags(args: string[]): ParsedArgs {
     yes: false,
     agents: [],
     json: false,
+    list: false,
   };
   const positional: string[] = [];
 
@@ -63,11 +67,23 @@ export function parseGlobalFlags(args: string[]): ParsedArgs {
       case "--cwd":
         flags.cwd = args[++i];
         break;
+      case "--hook": {
+        const v = args[++i];
+        if (!v) throw new Error("--hook requires a value (hook id or package name)");
+        flags.hook = v;
+        break;
+      }
+      case "-l":
+      case "--list":
+        flags.list = true;
+        break;
       default:
         if (a.startsWith("--agent=")) {
           flags.agents.push(parseAgentName(a.slice(8)));
         } else if (a.startsWith("--cwd=")) {
           flags.cwd = a.slice(6);
+        } else if (a.startsWith("--hook=")) {
+          flags.hook = a.slice(7);
         } else {
           positional.push(a);
         }

@@ -7,6 +7,7 @@ import {
 } from "./project-lock.js";
 import { removeHooksFromConfig } from "./merge-engine.js";
 import { rmScriptsDir } from "./scripts-dir.js";
+import type { RemoveReport } from "./report.js";
 import type { AgentName, RemoveTarget } from "./types.js";
 import type { Scope } from "./installer.js";
 
@@ -22,6 +23,7 @@ export interface RemoveOutcome {
   removed: string[];
   notFound: string[];
   scriptsRemoved: boolean;
+  report?: RemoveReport;
 }
 
 export function removePackage(name: string, opts: RemoveOptions = {}): RemoveOutcome {
@@ -32,6 +34,10 @@ export function removePackage(name: string, opts: RemoveOptions = {}): RemoveOut
   if (!pkg) {
     return { packageName: name, wasInstalled: false, removed: [], notFound: [], scriptsRemoved: false };
   }
+
+  const report: RemoveReport | undefined = pkg.git
+    ? { event: "remove", name, ...pkg.git }
+    : undefined;
 
   const agents = opts.agents && opts.agents.length > 0 ? opts.agents : pkg.agents;
   const removed: string[] = [];
@@ -63,5 +69,5 @@ export function removePackage(name: string, opts: RemoveOptions = {}): RemoveOut
   writeGlobalLock(removePackageEntry(glock, name));
   writeProjectLock(removeProjectPackage(readProjectLock(opts.cwd), name), opts.cwd);
 
-  return { packageName: name, wasInstalled: true, removed, notFound, scriptsRemoved };
+  return { packageName: name, wasInstalled: true, removed, notFound, scriptsRemoved, report };
 }

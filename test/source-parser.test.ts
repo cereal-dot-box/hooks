@@ -46,26 +46,32 @@ describe("parseSource (local)", () => {
   });
 });
 
-describe("parseSource (github)", () => {
+describe("parseSource (git shorthand)", () => {
   it("parses the github: prefix", () => {
     expect(parseSource("github:acme/hooks", work)).toEqual({
-      sourceType: "github",
+      sourceType: "git",
+      host: "github.com",
       owner: "acme",
       repo: "hooks",
+      cloneUrl: "https://github.com/acme/hooks",
     });
   });
 
-  it("parses the bare owner/repo shorthand", () => {
+  it("parses the bare owner/repo shorthand as github", () => {
     expect(parseSource("acme/hooks", work)).toEqual({
-      sourceType: "github",
+      sourceType: "git",
+      host: "github.com",
       owner: "acme",
       repo: "hooks",
+      cloneUrl: "https://github.com/acme/hooks",
     });
   });
 
   it("parses ref and subpath", () => {
-    expect(parseSource("github:acme/hooks@v1.2.0#pkgs/banner", work)).toEqual({
-      sourceType: "github",
+    const r = parseSource("github:acme/hooks@v1.2.0#pkgs/banner", work);
+    expect(r).toMatchObject({
+      sourceType: "git",
+      host: "github.com",
       owner: "acme",
       repo: "hooks",
       ref: "v1.2.0",
@@ -74,17 +80,13 @@ describe("parseSource (github)", () => {
   });
 
   it("parses subpath without ref", () => {
-    expect(parseSource("acme/hooks#pkgs/banner", work)).toEqual({
-      sourceType: "github",
-      owner: "acme",
-      repo: "hooks",
-      subPath: "pkgs/banner",
-    });
+    const r = parseSource("acme/hooks#pkgs/banner", work);
+    expect(r).toMatchObject({ subPath: "pkgs/banner" });
   });
 
   it("trims trailing slashes off the subpath", () => {
     const r = parseSource("acme/hooks#pkgs/banner/", work);
-    if (r.sourceType === "github") expect(r.subPath).toBe("pkgs/banner");
+    if (r.sourceType === "git") expect(r.subPath).toBe("pkgs/banner");
   });
 
   it("rejects invalid owner characters", () => {
@@ -93,5 +95,66 @@ describe("parseSource (github)", () => {
 
   it("rejects an empty repo", () => {
     expect(() => parseSource("acme/", work)).toThrow(/unsupported source/);
+  });
+});
+
+describe("parseSource (repo URLs)", () => {
+  it("parses a bare github URL", () => {
+    const r = parseSource("https://github.com/acme/hooks", work);
+    expect(r).toMatchObject({
+      sourceType: "git",
+      host: "github.com",
+      owner: "acme",
+      repo: "hooks",
+      cloneUrl: "https://github.com/acme/hooks",
+    });
+  });
+
+  it("parses a github tree URL with ref and path", () => {
+    const r = parseSource("https://github.com/acme/hooks/tree/main/pkgs/banner", work);
+    expect(r).toMatchObject({ host: "github.com", owner: "acme", repo: "hooks", ref: "main", subPath: "pkgs/banner" });
+  });
+
+  it("parses a github tree URL with ref only", () => {
+    const r = parseSource("https://github.com/acme/hooks/tree/v1.2.0", work);
+    expect(r).toMatchObject({ ref: "v1.2.0" });
+  });
+
+  it("strips .git and www", () => {
+    const r = parseSource("https://www.github.com/acme/hooks.git", work);
+    expect(r).toMatchObject({ sourceType: "git", owner: "acme", repo: "hooks" });
+  });
+
+  it("parses a gitlab tree URL", () => {
+    const r = parseSource("https://gitlab.com/acme/hooks/-/tree/main/pkgs/banner", work);
+    expect(r).toMatchObject({ host: "gitlab.com", ref: "main", subPath: "pkgs/banner" });
+  });
+
+  it("parses a bitbucket src URL", () => {
+    const r = parseSource("https://bitbucket.org/acme/hooks/src/main/pkgs/banner", work);
+    expect(r).toMatchObject({ host: "bitbucket.org", ref: "main", subPath: "pkgs/banner" });
+  });
+
+  it("parses a codeberg branch URL", () => {
+    const r = parseSource("https://codeberg.org/acme/hooks/src/branch/main/pkgs/banner", work);
+    expect(r).toMatchObject({ host: "codeberg.org", ref: "main", subPath: "pkgs/banner" });
+  });
+
+  it("accepts a generic host with owner/repo", () => {
+    const r = parseSource("https://git.example.com/acme/hooks", work);
+    expect(r).toMatchObject({ sourceType: "git", host: "git.example.com", owner: "acme", repo: "hooks" });
+  });
+
+  it("applies a #fragment subpath to URLs", () => {
+    const r = parseSource("https://gitlab.com/acme/hooks#pkgs/banner", work);
+    expect(r).toMatchObject({ host: "gitlab.com", subPath: "pkgs/banner" });
+  });
+
+  it("rejects URLs without owner/repo segments", () => {
+    expect(() => parseSource("https://github.com/acme", work)).toThrow(/unsupported source/);
+  });
+
+  it("rejects non-http URLs", () => {
+    expect(() => parseSource("file:///tmp/repo", work)).toThrow(/unsupported source/);
   });
 });

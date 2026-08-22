@@ -3,8 +3,9 @@ import { printHelp, printVersion, errorExit } from "./ui.js";
 import { runAdd } from "./add.js";
 import { runRemove } from "./remove.js";
 import { runList } from "./list.js";
+import { flushTelemetry } from "./report.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.3.0";
 
 async function main(argv: string[]): Promise<void> {
   const args = argv.slice(2);
@@ -43,7 +44,9 @@ async function main(argv: string[]): Promise<void> {
   }
 }
 
-main(process.argv).catch((err: unknown) => {
-  const msg = err instanceof Error ? err.message : String(err);
-  errorExit(msg);
-});
+main(process.argv)
+  .catch((err: unknown) => {
+    const msg = err instanceof Error ? err.message : String(err);
+    errorExit(msg);
+  })
+  .finally(() => flushTelemetry());

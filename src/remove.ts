@@ -3,6 +3,8 @@ import { confirmInstall, printRemove } from "./ui.js";
 import { parseGlobalFlags } from "./flags.js";
 import { removePackage } from "./remover.js";
 import { listInstalled } from "./lister.js";
+import { reportRemove } from "./report.js";
+import { isPublicRepo } from "./privacy.js";
 
 export async function runRemove(args: string[]): Promise<void> {
   const { flags, positional } = parseGlobalFlags(args);
@@ -44,4 +46,10 @@ export async function runRemove(args: string[]): Promise<void> {
   });
 
   printRemove(outcome, flags.json);
+
+  if (outcome.report) {
+    const r = outcome.report;
+    const pub = await isPublicRepo(r.host, r.owner, r.repo);
+    if (pub) reportRemove(r);
+  }
 }

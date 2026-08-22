@@ -177,21 +177,33 @@ describe("end-to-end", () => {
     }
   });
 
-  it("installs from a github source and records provenance in the lock", async () => {
-    const manifest = {
-      name: "gh-pkg",
-      hooks: [{ id: "hello", event: "SessionStart", command: "node $HOOK_DIR/hello.mjs" }],
-      files: ["hello.mjs"],
-    };
+  it("installs from a git URL: clone, --hook selection, telemetry self-registration, remove", { timeout: 30_000 }, async () => {
+    const { gitInitRepo } = await import("./git-fixture.js");
+    const repos = mkdtempSync(join(tmpdir(), "ah-e2e-repos-"));
+    gitInitRepo(join(repos, "acme/hooks"), {
+      "hooks.json": JSON.stringify({
+        name: "root-pkg",
+        hooks: [{ id: "root-hook", event: "Stop", command: "echo root" }],
+      }),
+      "pkgs/banner/hooks.json": JSON.stringify({
+        name: "gh-pkg",
+        description: "hello from git",
+        hooks: [{ id: "hello", event: "SessionStart", command: "node $HOOK_DIR/hello.mjs" }],
+        files: ["hello.mjs"],
+      }),
+      "pkgs/banner/hello.mjs": "console.log('hello from git')",
+      "pkgs/banner/README.md": "# gh-pkg readme",
+    });
+
+    let telemetry: any;
     const srv: Server = createServer((req, res) => {
-      if (req.url === "/acme/hooks/HEAD/hooks.json") {
-        res.end(JSON.stringify(manifest));
-      } else if (req.url === "/acme/hooks/HEAD/hello.mjs") {
-        res.end("console.log('hello from github')");
-      } else {
-        res.statusCode = 404;
-        res.end("not found");
-      }
+      let body = "";
+      req.on("data", (c: string) => (body += c));
+      req.on("end", () => {
+        if (req.url === "/api/install") telemetry = JSON.parse(body);
+        res.statusCode = 204;
+        res.end();
+      });
     });
     const base = await new Promise<string>((r) =>
       srv.listen(0, "127.0.0.1", () => {
@@ -202,28 +214,59 @@ describe("end-to-end", () => {
 
     const fresh = mkdtempSync(join(tmpdir(), "ah-e2e-gh-"));
     try {
-      const out = await runAsync(["add", "github:acme/hooks", "--global", "--yes", "--json"], fresh, {
-        HOOKS_GH_RAW_URL: base,
-        HOOKS_DIRECTORY_URL: base, // telemetry also hits the stub; 404s are swallowed
+      // --list shows both packages
+      const listOut = await runAsync(["add", "github:acme/hooks", "--list", "--json"], fresh, {
+        HOOKS_GIT_URL_BASE: repos,
       });
+      const listed = JSON.parse(listOut.stdout);
+      expect(listed.map((p: any) => p.name).sort()).toEqual(["gh-pkg", "root-pkg"]);
+
+      // URL grammar + --hook package selection
+      const out = await runAsync(
+        ["add", "https://github.com/acme/hooks", "--hook", "gh-pkg", "--global", "--yes", "--json"],
+        fresh,
+        {
+          HOOKS_GIT_URL_BASE: repos,
+          HOOKS_DIRECTORY_URL: base,
+          HOOKS_DISABLE_PRIVACY_CHECK: "1",
+        },
+      );
       expect(out.stderr).toBe("");
       expect(out.status).toBe(0);
 
       const lock = readJSON(join(fresh, ".hooks/hooks.json")) as any;
       const rec = lock.packages["gh-pkg"];
-      expect(rec.sourceType).toBe("github");
-      expect(rec.source).toBe("github:acme/hooks");
+      expect(rec.sourceType).toBe("git");
+      expect(rec.source).toBe("https://github.com/acme/hooks");
       expect(rec.sourceUrl).toBe("https://github.com/acme/hooks");
+      expect(rec.git).toEqual({ host: "github.com", owner: "acme", repo: "hooks", path: "pkgs/banner" });
 
       const script = join(fresh, ".hooks/hooks/hello/hello.mjs");
-      expect(readFileSync(script, "utf8")).toBe("console.log('hello from github')");
+      expect(readFileSync(script, "utf8")).toBe("console.log('hello from git')");
 
-      const rm = await runAsync(["remove", "gh-pkg", "--global", "--yes"], fresh, { HOOKS_GH_RAW_URL: base });
+      // telemetry self-registered the package with full metadata
+      expect(telemetry).toMatchObject({
+        event: "install",
+        host: "github.com",
+        owner: "acme",
+        repo: "hooks",
+        path: "pkgs/banner",
+        manifest: { name: "gh-pkg", description: "hello from git" },
+        fileContents: { "hello.mjs": "console.log('hello from git')" },
+        readme: "# gh-pkg readme",
+      });
+
+      const rm = await runAsync(["remove", "gh-pkg", "--global", "--yes"], fresh, {
+        HOOKS_GIT_URL_BASE: repos,
+        HOOKS_DIRECTORY_URL: base,
+        HOOKS_DISABLE_PRIVACY_CHECK: "1",
+      });
       expect(rm.status).toBe(0);
       expect(existsSync(script)).toBe(false);
     } finally {
       await new Promise<void>((r) => srv.close(() => r()));
       rmSync(fresh, { recursive: true, force: true });
+      rmSync(repos, { recursive: true, force: true });
     }
   });
 });

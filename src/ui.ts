@@ -72,6 +72,17 @@ export function printRemove(o: RemoveOutcome, json: boolean): void {
   if (o.scriptsRemoved) console.log(pc.dim("  scripts cleaned up"));
 }
 
+export function printSourceListing(packages: Array<{ name: string; relPath?: string; description?: string; hooks: Array<{ id: string; event: string }> }>): void {
+  for (const pkg of packages) {
+    const loc = pkg.relPath ? pc.dim(` (${pkg.relPath})`) : "";
+    const desc = pkg.description ? pc.dim(` — ${pkg.description}`) : "";
+    console.log(`${pc.bold(pc.cyan(pkg.name))}${loc}${desc}`);
+    for (const h of pkg.hooks) {
+      console.log(`  ${pc.magenta(h.event.padEnd(18))} ${h.id}`);
+    }
+  }
+}
+
 export function printHelp(): void {
   console.log(`hooks — install lifecycle hooks into Claude Code + Codex
 
@@ -79,13 +90,15 @@ ${pc.bold("Usage")}
   hooks <command> [options]
 
 ${pc.bold("Commands")}
-  add <source>        Install from a local dir or github:owner/repo[@ref][#path]
+  add <source>        Install from a git repo URL (any forge), owner/repo, or a local dir
   list                Show installed packages and drift status
   remove <name>       Remove a package and its hooks
 
 ${pc.bold("Options")}
   -g, --global        Target ~/.claude + ~/.codex (default)
   -p, --project       Target ./.claude + ./.codex (committable)
+  --hook <id|name>    Install one hook of a package, or the package with that name
+  -l, --list          List packages a source offers, without installing
   --agent <name>      Restrict to a specific agent (repeatable)
   --no-marker         Skip managedBy/hooksId fields
   --force             Suppress drift warnings
